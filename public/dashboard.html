@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Welcome Back</title>
+</head>
+<body>
+    <h1>Welcome to Your Dashboard!</h1>
+    
+    <div id="loading" style="text-align: center; padding: 20px;">
+        <p>Loading your dashboard...</p>
+    </div>
+    
+    <div id="dashboard-content" style="display: none;">
+        <div id="user-welcome"></div>
+        
+        <h2>Your Account</h2>
+        <div id="user-info" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+            <!-- User information will be loaded here -->
+        </div>
+        
+        <h2>Quick Actions</h2>
+        <button type="button" id="view-profile-btn">View Profile</button>
+        <button type="button" id="settings-btn">Settings</button>
+        <button type="button" id="admin-btn" style="background-color: #6f42c1;">Admin Panel</button>
+        <button type="button" id="logout-btn" style="background-color: #dc3545;">Logout</button>
+        
+        <br><br>
+        
+        <p><a href="index.html">← Back to Main Page</a></p>
+    </div>
+    
+    <div id="auth-error" style="display: none; text-align: center; padding: 20px;">
+        <h2>Authentication Required</h2>
+        <p>Please log in to access your dashboard.</p>
+        <button id="auth-login-btn">Go to Login</button>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Your Application Name</p>
+    </footer>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Choose Your Method</title>
+</head>
+<body>
+    <h1>Login to Your Account</h1>
+    
+    <p>Choose your preferred login method:</p>
+    
+    <h2>Login via SMS</h2>
+    <div class="sms-info">
+        <p><strong>📱 Canadian Numbers Only:</strong> We currently support Canadian phone numbers only. Numbers will be automatically formatted to +1XXXXXXXXXX format.</p>
+    </div>
+    
+    <form action="#" method="post" id="sms-login-form">
+        <label for="phone">Phone Number:</label><br>
+        <input type="tel" id="phone" name="phone" placeholder="+1234567890 or 234567890" required><br>
+        <div id="phone-warning" class="warning-message" style="display: none;"></div><br>
+        
+        <button type="submit">Send SMS Code</button>
+    </form>
+    
+    <br>
+    
+    <div id="sms-verification" style="display: none;">
+        <h3>📱 Enter Verification Code</h3>
+        <p>We've sent a 6-digit code to your phone number. Please enter it below:</p>
+        <div id="verification-info" style="margin: 10px 0; padding: 10px; background-color: #e8f4f8; border-radius: 5px;">
+            <strong>Phone:</strong> <span id="verification-phone"></span>
+        </div>
+        <label for="sms-code">Verification Code:</label><br>
+        <input type="text" id="sms-code" name="sms-code" placeholder="000000" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code"><br>
+        <div id="verification-warning" style="display: none; color: #dc3545; margin: 5px 0;"></div><br>
+        
+        <button type="button" id="verify-sms-btn">Verify Code</button>
+        <button type="button" id="resend-code-btn" style="background-color: #6c757d; margin-left: 10px;">Resend Code</button>
+        <button type="button" id="cancel-verification-btn" style="background-color: #dc3545; margin-left: 10px;">Cancel</button>
+    </div>
+    
+    <hr>
+    
+    <h2>Login via Google</h2>
+    <p>Click the button below to login with your Google account:</p>
+    
+    <button type="button" id="google-login-btn">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE3LjY0IDkuMjA0NTVDMTcuNjQgOC41NjY4MiAxNy41ODY4IDcuOTUyMjcgMTcuNDg2NCA3LjM2MzY0SDE5VjEwLjg0MDlIMTYuMjk1NUMxNi4xODE4IDEyLjI2MDkgMTUuNjQwOSAxMy4zNDA5IDE0LjgxODIgMTQuMDY4MkwxNy4yOTU1IDE1LjkzMThDMTguNjU5MSAxNC42ODE4IDE5LjU2ODIgMTIuNjgxOCAxOS41NjgyIDEwLjIyNzNDMTkuNTY4MiA5LjY4MTgyIDE5LjUxMzYgOS4zODY0IDE5LjM5MDkgOS4xNTkwOUgxNy42NFoiIGZpbGw9IiM0Mjg1RjQiLz4KPC9zdmc+" alt="Google" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px;">
+        Login with Google
+    </button>
+    
+    <hr>
+    
+    <h2>Login via Telegram</h2>
+    <p>Login using your Telegram account:</p>
+    <div>
+        <p><em>🚧 Coming Soon - Telegram login integration is currently in development</em></p>
+    </div>
+    
+    <button type="button" id="telegram-login-btn" disabled>
+        📱 Login with Telegram
+    </button>
+    
+    <br>
+    
+    <p><a href="index.html">← Back to Main Page</a></p>
+    
+    <footer>
+        <p>&copy; 2025 Your Application Name</p>
+    </footer>
+
+    <script src="/js/login.js"></script>
+</body>
+</html>
