@@ -313,6 +313,7 @@ function verifySMS() {
     // Send verification request to your API
     fetch('/api/auth/sms/verify', {
         method: 'POST',
+        credentials: 'include', // Include cookies for session
         headers: {
             'Content-Type': 'application/json',
         },
@@ -335,7 +336,8 @@ function verifySMS() {
     })
     .then(data => {
         if (data.token) {
-            // Successful verification
+            // Successful verification - session is now set via cookie
+            // Keep token in localStorage for backward compatibility
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
             

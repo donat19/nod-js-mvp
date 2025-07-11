@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const smsService = require('../services/smsService');
+const SessionService = require('../services/sessionService');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
@@ -136,19 +137,16 @@ router.post('/sms/verify', [
         await user.verify();
       }
       
-      // Generate JWT token
-      const token = jwt.sign(
-        user.toTokenPayload(),
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-      );
+      // Generate JWT token and set session
+      const token = SessionService.setUserSession(req, user);
       
       res.json({ 
         message: isNewUser ? 'Account created and phone number verified successfully' : 'Welcome back! Phone number verified successfully',
         token: token,
         user: user.toJSON(),
         isNewUser: isNewUser,
-        status: verificationResult.status
+        status: verificationResult.status,
+        sessionSet: true
       });
     } else {
       res.status(400).json({ 
@@ -291,58 +289,123 @@ router.get('/google/callback', async (req, res) => {
 
 // Logout
 router.post('/logout', (req, res) => {
-  // TODO: Implement logout logic (invalidate token, etc.)
-  res.json({ message: 'Logged out successfully' });
+  // Clear session cookie
+  SessionService.clearUserSession(req);
+  res.json({ 
+    message: 'Logged out successfully',
+    sessionCleared: true
+  });
 });
 
-// Verify token
+// Check session status
+router.get('/session', async (req, res) => {
+  try {
+    const sessionInfo = SessionService.getSessionInfo(req);
+    
+    if (!sessionInfo) {
+      return res.json({
+        authenticated: false,
+        session: null
+      });
+    }
+
+    // Get fresh user data to ensure session is still valid
+    const user = await SessionService.getUserFromSession(req);
+    
+    if (!user) {
+      return res.json({
+        authenticated: false,
+        session: null
+      });
+    }
+
+    // Refresh session with current user data
+    await SessionService.refreshUserSession(req, user);
+    
+    res.json({
+      authenticated: true,
+      session: SessionService.getSessionInfo(req),
+      user: user.toJSON()
+    });
+  } catch (error) {
+    console.error('Session check error:', error);
+    res.status(500).json({ 
+      message: 'Error checking session',
+      authenticated: false 
+    });
+  }
+});
+
+// Verify token (supports both JWT and session)
 router.get('/verify', async (req, res) => {
   try {
+    // First check session
+    const user = await SessionService.getUserFromSession(req);
+    
+    if (user) {
+      return res.json({ 
+        message: 'Session is valid', 
+        user: user.toJSON(),
+        valid: true,
+        method: 'session'
+      });
+    }
+
+    // Fallback to JWT token verification
     const token = req.headers.authorization?.split(' ')[1];
     
     if (!token) {
-      return res.status(401).json({ message: 'No token provided' });
+      return res.status(401).json({ message: 'No token or session provided' });
     }
     
     // Verify JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
     // Get fresh user data from database
-    const user = await User.findById(decoded.id);
+    const tokenUser = await User.findById(decoded.id);
     
-    if (!user) {
+    if (!tokenUser) {
       return res.status(401).json({ message: 'User not found' });
     }
     
-    if (!user.is_active) {
+    if (!tokenUser.is_active) {
       return res.status(401).json({ message: 'Account is deactivated' });
     }
     
     res.json({ 
       message: 'Token is valid', 
-      user: user.toJSON(),
-      valid: true
+      user: tokenUser.toJSON(),
+      valid: true,
+      method: 'jwt'
     });
   } catch (error) {
     console.error('Token verification error:', error);
-    res.status(401).json({ message: 'Invalid or expired token' });
+    res.status(401).json({ message: 'Invalid or expired token/session' });
   }
 });
 
-// Get current user profile
+// Get current user profile (supports both session and JWT)
 router.get('/profile', async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    // First check session
+    let user = await SessionService.getUserFromSession(req);
+    let method = 'session';
     
-    if (!token) {
-      return res.status(401).json({ message: 'No token provided' });
+    // Fallback to JWT token if no session
+    if (!user) {
+      const token = req.headers.authorization?.split(' ')[1];
+      
+      if (!token) {
+        return res.status(401).json({ message: 'No token or session provided' });
+      }
+      
+      // Verify JWT token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+      // Get fresh user data from database
+      user = await User.findById(decoded.id);
+      method = 'jwt';
     }
-    
-    // Verify JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Get fresh user data from database
-    const user = await User.findById(decoded.id);
     
     if (!user) {
       return res.status(401).json({ message: 'User not found' });
@@ -354,11 +417,83 @@ router.get('/profile', async (req, res) => {
     
     res.json({ 
       user: user.toJSON(),
-      valid: true
+      valid: true,
+      method: method,
+      session: method === 'session' ? SessionService.getSessionInfo(req) : null
     });
   } catch (error) {
     console.error('Profile fetch error:', error);
-    res.status(401).json({ message: 'Invalid or expired token' });
+    res.status(401).json({ message: 'Invalid or expired token/session' });
+  }
+});
+
+// Update user profile (supports both session and JWT)
+router.put('/profile', [
+  body('name').optional().isLength({ min: 1 }).withMessage('Name must not be empty'),
+  body('email').optional().isEmail().withMessage('Please provide a valid email')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // First check session
+    let user = await SessionService.getUserFromSession(req);
+    let method = 'session';
+    
+    // Fallback to JWT token if no session
+    if (!user) {
+      const token = req.headers.authorization?.split(' ')[1];
+      
+      if (!token) {
+        return res.status(401).json({ message: 'No token or session provided' });
+      }
+      
+      // Verify JWT token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+      // Get fresh user data from database
+      user = await User.findById(decoded.id);
+      method = 'jwt';
+    }
+    
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+    
+    if (!user.is_active) {
+      return res.status(401).json({ message: 'Account is deactivated' });
+    }
+
+    // Update user fields if provided
+    const { name, email } = req.body;
+    
+    if (name !== undefined) {
+      user.name = name;
+    }
+    
+    if (email !== undefined) {
+      user.email = email;
+    }
+    
+    // Save updated user
+    await user.save();
+    
+    // If using session, refresh the session with updated user data
+    if (method === 'session') {
+      await SessionService.refreshUserSession(req, user);
+    }
+    
+    res.json({ 
+      message: 'Profile updated successfully',
+      user: user.toJSON(),
+      method: method,
+      session: method === 'session' ? SessionService.getSessionInfo(req) : null
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ message: 'Error updating profile' });
   }
 });
 

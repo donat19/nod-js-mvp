@@ -4,6 +4,8 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
 const { testConnection } = require('./config/database');
 require('dotenv').config();
 
@@ -36,6 +38,17 @@ app.use(cors());
 app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Cookie session configuration
+app.use(cookieSession({
+  name: 'mvp-session',
+  keys: [process.env.SESSION_SECRET || 'your-secret-key-change-in-production'],
+  maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+  httpOnly: true,
+  sameSite: 'strict'
+}));
 
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));

@@ -3,23 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - Main Page</title>
+    <title>AutoMax - Premium Car Sales</title>
 </head>
 <body>
-    <h1>Welcome to Our Application</h1>
+    <header>
+        <h1>🚗 AutoMax - Premium Car Sales</h1>
+    </header>
     
-    <p>Please login to access your account.</p>
+    <!-- Content for logged out users -->
+    <div id="guest-content">
+        <section id="welcome-guest">
+            <h2>Welcome to AutoMax</h2>
+            <p>Please log in to access your account and personalized features.</p>
+        </section>
+        
+        <div id="auth-buttons">
+            <a href="login.html">
+                <button type="button">Login / Sign Up</button>
+            </a>
+        </div>
+    </div>
     
-    <a href="login.html">
-        <button type="button">Login</button>
-    </a>
-    
-    <br><br>
-    
-    <p>New user? <a href="login.html">Sign up here</a></p>
+    <!-- Content for logged in users -->
+    <div id="user-content" style="display: none;">
+        <section id="user-welcome">
+            <h2>✅ You are logged in as <span id="user-name">User</span></h2>
+            <p>Welcome to your AutoMax account dashboard.</p>
+        </section>
+
+        <section id="account-info">
+            <h3>Your Account Information</h3>
+            <p><strong>Name:</strong> <span id="display-name">-</span></p>
+            <p><strong>Phone:</strong> <span id="display-phone">-</span></p>
+            <p><strong>Email:</strong> <span id="display-email">-</span></p>
+            <p><strong>Customer since:</strong> <span id="display-date">-</span></p>
+        </section>
+        
+        <section id="user-actions">
+            <h3>Account Actions</h3>
+            <div id="action-buttons">
+                <a href="dashboard.html">
+                    <button type="button">Go to Dashboard</button>
+                </a>
+                
+                <a href="settings.html">
+                    <button type="button">Account Settings</button>
+                </a>
+                
+                <button type="button" id="logout-btn">Logout</button>
+            </div>
+        </section>
+    </div>
     
     <footer>
-        <p>&copy; 2025 Your Application Name</p>
+        <p>&copy; 2025 AutoMax Premium Car Sales</p>
     </footer>
+
+    <script src="/js/session.js"></script>
+    <script src="/js/index.js"></script>
 </body>
 </html>

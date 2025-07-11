@@ -2,19 +2,13 @@
 
 let currentUser = null;
 
-// Check authentication and load user data
+// Check authentication and load user data (session-aware)
 async function checkAuthentication() {
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-        showAuthError();
-        return false;
-    }
-    
     try {
+        // First try session-based authentication
         const response = await fetch('/api/auth/profile', {
+            credentials: 'include', // Include cookies
             headers: {
-                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             }
         });
@@ -23,13 +17,40 @@ async function checkAuthentication() {
             const data = await response.json();
             currentUser = data.user;
             
+            // Update localStorage with fresh user data for backward compatibility
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            
+            displayDashboard();
+            return true;
+        }
+        
+        // Fallback to token-based authentication
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            showAuthError();
+            return false;
+        }
+        
+        const tokenResponse = await fetch('/api/auth/profile', {
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (tokenResponse.ok) {
+            const tokenData = await tokenResponse.json();
+            currentUser = tokenData.user;
+            
             // Update localStorage with fresh user data
             localStorage.setItem('user', JSON.stringify(currentUser));
             
             displayDashboard();
             return true;
         } else {
-            // Token is invalid, clear storage and show auth error
+            // Both session and token are invalid
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             showAuthError();
@@ -72,27 +93,29 @@ function showAuthError() {
     document.getElementById('auth-error').style.display = 'block';
 }
 
-// Logout function
+// Logout function (session-aware)
 function logout() {
     if (confirm('Are you sure you want to logout?')) {
-        // Clear stored tokens
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        
-        // Optional: call logout API
+        // Call logout API to clear session
         fetch('/api/auth/logout', {
             method: 'POST',
+            credentials: 'include', // Include cookies
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             }
         })
         .then(() => {
+            // Clear stored tokens for backward compatibility
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            
             alert('You have been logged out successfully.');
             window.location.href = '/';
         })
         .catch(() => {
-            // Even if API call fails, still redirect
+            // Even if API call fails, still clear and redirect
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
             alert('You have been logged out successfully.');
             window.location.href = '/';
         });

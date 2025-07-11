@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoMax - Customer Account Settings</title>
+</head>
+<body>
+    <div id="loading">
+        <p>🔄 Loading your customer account settings...</p>
+    </div>
+
+    <div id="settings-content" style="display: none;">
+        <header>
+            <h1>⚙️ AutoMax Customer Account Settings</h1>
+        </header>
+        
+        <nav>
+            <a href="index.html">🏠 Home</a> | 
+            <a href="dashboard.html">📊 Dashboard</a> |
+            <a href="inventory.html">🚗 Browse Cars</a>
+        </nav>
+        
+        <section id="customer-profile">
+            <h2>👤 Customer Profile</h2>
+            
+            <form id="profile-form">
+                <div>
+                    <label for="name">Full Name:</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name">
+                    <small>This will appear on all your vehicle documents</small>
+                </div>
+                
+                <div>
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email">
+                    <small>We'll send vehicle alerts and financing updates here</small>
+                </div>
+                
+                <div>
+                    <label for="phone">Phone Number:</label>
+                    <input type="text" id="phone" name="phone" readonly>
+                    <small>📱 Primary contact - verified via SMS (cannot be changed here)</small>
+                </div>
+                
+                <button type="submit">💾 Update Profile</button>
+            </form>
+        </section>
+
+        <section id="vehicle-preferences">
+            <h2>🎯 Vehicle Preferences</h2>
+            
+            <form id="preferences-form">
+                <div>
+                    <label for="budget-max">Maximum Budget:</label>
+                    <select id="budget-max" name="budget-max">
+                        <option value="">Select budget range</option>
+                        <option value="15000">Under $15,000</option>
+                        <option value="25000">$15,000 - $25,000</option>
+                        <option value="35000">$25,000 - $35,000</option>
+                        <option value="50000">$35,000 - $50,000</option>
+                        <option value="75000">$50,000 - $75,000</option>
+                        <option value="100000">$75,000+</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="vehicle-type">Preferred Vehicle Type:</label>
+                    <select id="vehicle-type" name="vehicle-type">
+                        <option value="">Any type</option>
+                        <option value="sedan">🚗 Sedan</option>
+                        <option value="suv">🚙 SUV</option>
+                        <option value="truck">🚛 Truck</option>
+                        <option value="coupe">🏎️ Coupe</option>
+                        <option value="hatchback">🚐 Hatchback</option>
+                        <option value="convertible">🏖️ Convertible</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="fuel-type">Fuel Preference:</label>
+                    <select id="fuel-type" name="fuel-type">
+                        <option value="">No preference</option>
+                        <option value="gas">⛽ Gasoline</option>
+                        <option value="hybrid">🔋 Hybrid</option>
+                        <option value="electric">⚡ Electric</option>
+                        <option value="diesel">🛢️ Diesel</option>
+                    </select>
+                </div>
+                
+                <button type="submit">🎯 Save Preferences</button>
+            </form>
+        </section>
+        
+        <section id="notification-settings">
+            <h2>🔔 Notification Preferences</h2>
+            
+            <form id="notifications-form">
+                <div>
+                    <input type="checkbox" id="new-inventory" name="new-inventory" checked>
+                    <label for="new-inventory">📧 New inventory matching my preferences</label>
+                </div>
+                
+                <div>
+                    <input type="checkbox" id="price-drops" name="price-drops" checked>
+                    <label for="price-drops">💰 Price drops on saved vehicles</label>
+                </div>
+                
+                <div>
+                    <input type="checkbox" id="financing-offers" name="financing-offers">
+                    <label for="financing-offers">🏦 Special financing offers</label>
+                </div>
+                
+                <div>
+                    <input type="checkbox" id="service-reminders" name="service-reminders">
+                    <label for="service-reminders">🔧 Service and maintenance reminders</label>
+                </div>
+                
+                <button type="submit">🔔 Update Notifications</button>
+            </form>
+        </section>
+        
+        <section id="account-actions">
+            <h2>🛠️ Account Management</h2>
+            
+            <div id="action-buttons">
+                <button type="button" id="change-phone-btn">📱 Change Phone Number</button>
+                <button type="button" id="export-data-btn">📤 Export My Data</button>
+                <button type="button" id="delete-account-btn">🗑️ Delete Account</button>
+                <button type="button" id="logout-btn">🚪 Logout</button>
+            </div>
+        </section>
+        
+        <section id="account-info">
+            <h2>ℹ️ Account Information</h2>
+            <div>
+                <p><strong>Account Status:</strong> <span id="status">Active Customer</span></p>
+                <p><strong>Customer Since:</strong> <span id="member-since">-</span></p>
+                <p><strong>Last Activity:</strong> <span id="last-login">-</span></p>
+                <p><strong>Vehicles Purchased:</strong> <span id="purchase-count">0</span></p>
+                <p><strong>Referral Code:</strong> <span id="referral-code">CUSTOMER-2025</span></p>
+            </div>
+        </section>
+
+        <section id="support">
+            <h2>🆘 Need Help?</h2>
+            <div>
+                <p><strong>📞 Sales Support:</strong> (555) AUTO-MAX ext. 1</p>
+                <p><strong>💰 Finance Department:</strong> (555) AUTO-MAX ext. 2</p>
+                <p><strong>🔧 Service Department:</strong> (555) AUTO-MAX ext. 3</p>
+                <p><strong>📧 Email Support:</strong> support@automax.com</p>
+                <p><strong>💬 Live Chat:</strong> Available Mon-Fri 9AM-6PM</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="/js/session.js"></script>
+    <script src="/js/settings.js"></script>
+</body>
+</html>
