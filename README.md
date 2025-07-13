@@ -1,53 +1,95 @@
-# Node.js MVP Application
+# AutoMax - Premium Car Sales Platform
 
-A Node.js MVP application with SMS and Google OAuth authentication, powered by PostgreSQL.
+A comprehensive Node.js car sales platform with SMS authentication, session management, and vehicle inventory system, powered by PostgreSQL.
+
+## Project Overview
+
+AutoMax is a modern car dealership platform featuring secure authentication, persistent user sessions, and a robust vehicle management system. The platform supports both guest browsing and authenticated user experiences with personalized features.
 
 ## Project Structure
 
 ```
-├── server.js              # Main server file
-├── package.json           # Dependencies and scripts
-├── .env                   # Environment variables
-├── public/                # Static files (HTML, CSS, JS)
-│   ├── index.html         # Main page
-│   ├── login.html         # Login page
-│   ├── dashboard.html     # Dashboard page
-│   └── 404.html          # 404 error page
-├── routes/                # API routes
-│   ├── auth.js           # Authentication routes
-│   └── users.js          # User management routes
-├── middleware/            # Express middleware
-│   └── auth.js           # Authentication middleware
-├── models/               # Data models
-│   ├── User.js           # User model with PostgreSQL integration
-│   └── VerificationCode.js # SMS verification code model
-├── services/             # Business logic services
-│   ├── smsService.js     # SMS verification service
-│   └── googleOAuthService.js # Google OAuth service
-├── config/               # Configuration files
-│   └── database.js       # PostgreSQL connection and helpers
-├── database/             # Database related files
-│   ├── migrations/       # SQL migration files
-│   └── migrator.js       # Migration management system
-├── scripts/              # Utility scripts
-│   ├── migrate.js        # Run migrations
-│   ├── rollback.js       # Rollback migrations
-│   └── setup-db.js       # Database setup script
-└── docs/                 # Documentation
-    └── POSTGRESQL.md      # Comprehensive PostgreSQL guide
+├── server.js                    # Main Express server
+├── package.json                 # Dependencies and scripts
+├── .env                         # Environment variables
+├── public/                      # Static frontend files
+│   ├── index.html              # Main landing page
+│   ├── login.html              # SMS authentication page
+│   ├── dashboard.html          # User dashboard
+│   ├── settings.html           # Account settings page
+│   ├── admin.html              # Admin panel
+│   └── js/                     # Frontend JavaScript
+│       ├── session.js          # Session management utilities
+│       ├── index.js            # Main page functionality
+│       ├── login.js            # Authentication logic
+│       ├── dashboard.js        # Dashboard features
+│       ├── settings.js         # Settings management
+│       └── admin.js            # Admin panel functionality
+├── routes/                      # API endpoints
+│   ├── auth.js                 # Authentication & session routes
+│   ├── users.js                # User management routes
+│   └── cars.js                 # Vehicle inventory API (ready for future use)
+├── middleware/                  # Express middleware
+│   └── auth.js                 # Authentication middleware
+├── models/                      # Data models
+│   ├── User.js                 # User model with full CRUD
+│   ├── Car.js                  # Vehicle model with search/filtering
+│   └── VerificationCode.js     # SMS verification model
+├── services/                    # Business logic
+│   ├── smsService.js           # SMS with collision detection
+│   ├── sessionService.js       # Cookie-based session management
+│   └── googleOAuthService.js   # Google OAuth integration
+├── config/                      # Configuration
+│   └── database.js             # PostgreSQL connection & pooling
+├── database/migrations/         # Database schema
+│   ├── 001_create_users_table.sql     # User authentication
+│   ├── 002_add_admin_features.sql     # Admin roles & logging
+│   └── 003_create_cars_table.sql      # Vehicle inventory system
+├── scripts/                     # Utility scripts
+│   ├── migrate.js              # Database migration runner
+│   ├── migrate-cars.js         # Cars table migration
+│   ├── rollback.js             # Migration rollback
+│   └── setup-db.js             # Initial database setup
+└── docs/                        # Documentation
+    └── POSTGRESQL.md            # Database documentation
 ```
 
-## Features
+## Key Features
 
-- ✅ SMS authentication with verification codes
-- ✅ Google OAuth integration
-- ✅ JWT token-based authentication
-- ✅ PostgreSQL database with connection pooling
-- ✅ Database migrations system
-- ✅ Express.js REST API
+### 🔐 Authentication & Security
+- ✅ SMS verification with Twilio integration
+- ✅ Anti-collision verification code generation
+- ✅ Cookie-based persistent sessions
+- ✅ JWT token fallback authentication
+- ✅ Secure session management with HTTPOnly cookies
 - ✅ Rate limiting and security middleware
-- ✅ Modular structure for scalability
-- ✅ Comprehensive error handling
+- ✅ Admin role-based access control
+
+### 👥 User Management
+- ✅ Phone number-based registration
+- ✅ Profile management (name, email updates)
+- ✅ Session persistence across browser restarts
+- ✅ User dashboard with account overview
+- ✅ Settings page with preferences
+- ✅ Admin panel for user management
+
+### 🚗 Vehicle Platform (Database Ready)
+- ✅ Complete cars table with all vehicle attributes
+- ✅ Car inquiries system for lead tracking
+- ✅ Saved cars functionality for user favorites
+- ✅ Advanced search and filtering capabilities
+- ✅ Featured vehicles system
+- ✅ Image and feature storage (JSON)
+- ✅ VIN tracking and dealer notes
+
+### 🛠 Technical Infrastructure
+- ✅ PostgreSQL with connection pooling
+- ✅ Comprehensive database migrations
+- ✅ Modular Express.js architecture
+- ✅ Error handling and logging
+- ✅ API-ready vehicle management endpoints
+- ✅ Performance-optimized database indexes
+- ✅ JSONB support for flexible data storage
 - ✅ Soft delete functionality
 
 ## Quick Start
@@ -108,10 +150,20 @@ npm run db:rollback
 - `POST /api/auth/logout` - Logout user
 - `GET /api/auth/verify` - Verify JWT token
 
-### Users
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update user profile
-- `DELETE /api/users/account` - Delete user account
+### Car Management (Ready for Implementation)
+- `GET /api/cars` - List cars with filtering/search
+- `POST /api/cars` - Create new car listing (admin)
+- `GET /api/cars/:id` - Get car details
+- `PUT /api/cars/:id` - Update car listing (admin)
+- `DELETE /api/cars/:id` - Delete car listing (admin)
+- `POST /api/cars/:id/inquire` - Submit car inquiry
+- `POST /api/cars/:id/save` - Save car to favorites
+- `DELETE /api/cars/:id/save` - Remove from favorites
+
+### Session Management
+- `GET /api/auth/session` - Get current session info
+- `POST /api/auth/refresh` - Refresh authentication session
+- `GET /api/auth/status` - Check authentication status
 
 ## Environment Variables
 
@@ -150,48 +202,105 @@ SESSION_SECRET=your_session_secret
 
 ### Tables:
 - **users** - User accounts with authentication data
-- **verification_codes** - SMS verification codes
+- **verification_codes** - SMS verification codes  
 - **user_sessions** - JWT token management
+- **cars** - Vehicle inventory with full specifications
+- **car_inquiries** - Customer inquiries and lead tracking
+- **saved_cars** - User favorite vehicles
 - **migrations** - Migration tracking
 
 ### Key Features:
 - UUID primary keys
-- Soft delete functionality
+- Soft delete functionality  
 - Automatic timestamps
-- Proper indexing
-- Foreign key constraints
+- Proper indexing and foreign key constraints
+- JSONB storage for features and metadata
+- Advanced search indexes for vehicle filtering
+
+### Car Database Structure:
+```sql
+cars table includes:
+- Basic info: make, model, year, mileage, price
+- Technical: VIN, engine, transmission, drivetrain  
+- Features: JSON storage for flexible attributes
+- Media: JSON array for image URLs
+- Dealer: notes, featured status, availability
+- Location: city, state for geographic search
+- Timestamps: created_at, updated_at, deleted_at
+```
 
 ## Usage Examples
 
-### Creating Users:
+### User Management:
 ```javascript
 const User = require('./models/User');
 
-// Create new user
+// Create new user with phone verification
 const user = await User.create({
   phone: '+1234567890',
-  email: 'user@example.com',
+  email: 'user@example.com', 
   name: 'John Doe'
 });
 
-// Find and update user
+// Find and update user profile
 const user = await User.findByPhone('+1234567890');
 user.name = 'John Smith';
 await user.save();
 ```
 
-### SMS Verification:
+### Car Inventory Management:
 ```javascript
-const VerificationCode = require('./models/VerificationCode');
+const Car = require('./models/Car');
 
-// Create and send code
-const code = await VerificationCode.create('+1234567890', '123456');
+// Create new car listing
+const car = await Car.create({
+  make: 'Toyota',
+  model: 'Camry', 
+  year: 2022,
+  mileage: 15000,
+  price: 28500,
+  condition: 'excellent',
+  features: ['navigation', 'backup_camera', 'bluetooth'],
+  images: ['image1.jpg', 'image2.jpg']
+});
 
-// Verify code
-const validCode = await VerificationCode.findValidCode('+1234567890', '123456');
-if (validCode) {
-  await validCode.markAsUsed();
+// Search cars with filters
+const cars = await Car.search({
+  make: 'Toyota',
+  minPrice: 20000,
+  maxPrice: 35000,
+  condition: 'excellent'
+});
+```
+
+### SMS Verification with Collision Protection:
+```javascript
+const { generateUniqueVerificationCode } = require('./services/smsService');
+
+// Generate collision-safe verification code
+const result = await generateUniqueVerificationCode('+1234567890');
+if (result.success) {
+  console.log(`Sent code ${result.code} to ${result.phone}`);
 }
+
+// Verify code (supports both Twilio Verify and custom codes)
+const isValid = await verifyCode('+1234567890', '123456');
+```
+
+### Session Management:
+```javascript
+const { SessionService } = require('./services/sessionService');
+
+// Set user session with persistent cookie
+SessionService.setUserSession(req, user);
+
+// Get user from session
+const currentUser = await SessionService.getUserFromSession(req);
+
+// Require authentication middleware
+app.get('/dashboard', SessionService.requireAuth, (req, res) => {
+  res.render('dashboard', { user: req.user });
+});
 ```
 
 ## Twilio SMS Setup
@@ -338,30 +447,100 @@ npm test  # (to be implemented)
 6. Enable HTTPS
 7. Configure reverse proxy (Nginx)
 
-## TODO
+## TODO & Roadmap
 
-- [x] Complete Twilio SMS integration (Verify API)
-- [x] Add direct SMS messaging (Messages API)
+### ✅ Completed Features:
+- [x] Complete Twilio SMS integration (Verify API + Messages API)
+- [x] Collision-safe verification code generation  
+- [x] Cookie-based session management with JWT fallback
+- [x] Complete car inventory database structure
+- [x] User authentication and profile management
+- [x] Admin panel and role-based access
+- [x] AutoMax car sales UI/UX design
+- [x] PostgreSQL with comprehensive migrations
+- [x] API endpoints for car management (ready for frontend)
+
+### 🔄 In Progress:
+- [ ] Car inventory frontend implementation
+- [ ] Advanced search and filtering UI
+- [ ] Car inquiry and lead management system
+- [ ] Image upload and management
+- [ ] Vehicle comparison features
+
+### 📋 Planned Features:
 - [ ] Complete Google OAuth implementation
-- [ ] Add comprehensive input validation
-- [ ] Add unit and integration tests
-- [ ] Add API documentation (Swagger)
-- [ ] Add logging system (Winston)
-- [ ] Add email verification
-- [ ] Add password reset functionality
-- [ ] Add user roles and permissions
+- [ ] Telegram Bot integration (Telegraf installed)
+- [ ] Email verification and notifications
+- [ ] Password reset functionality  
+- [ ] Advanced user roles and permissions
+- [ ] Comprehensive unit and integration tests
+- [ ] API documentation (Swagger/OpenAPI)
+- [ ] Logging system (Winston)
+- [ ] Performance monitoring and analytics
+- [ ] Mobile app API compatibility
+- [ ] Real-time notifications (WebSocket)
+- [ ] Vehicle history reports integration
+- [ ] Financing calculator tools
+- [ ] Dealer management system
+- [ ] Multi-language support
+
+### 🚀 Production Readiness:
+- [ ] Security audit and penetration testing
+- [ ] Load testing and performance optimization
+- [ ] Backup and disaster recovery procedures  
+- [ ] CI/CD pipeline setup
+- [ ] Docker containerization
+- [ ] Monitoring and alerting setup
 - [ ] Add rate limiting per user
 - [ ] Add API versioning
 - [ ] Add health check endpoints
 
 ## Contributing
 
+We welcome contributions to AutoMax! Please follow these guidelines:
+
+### Development Setup:
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Install dependencies: `npm install`
+4. Set up environment variables (copy `.env.example` to `.env`)
+5. Run database migrations: `npm run migrate`
+6. Start development server: `npm run dev`
+
+### Code Standards:
+- Follow ESLint configuration
+- Use meaningful commit messages
+- Add tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting PR
+
+### Reporting Issues:
+- Use GitHub Issues for bug reports
+- Include steps to reproduce the issue
+- Provide environment details (Node.js version, OS, etc.)
+- Add relevant error messages and logs
 
 ## License
 
-MIT License - see LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+- 📧 Email: support@automax.com
+- 💬 Discord: [AutoMax Community](https://discord.gg/automax)
+- 📖 Documentation: [AutoMax Docs](./docs/)
+- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/automax/issues)
+
+## Acknowledgments
+
+- **Twilio** - SMS and verification services
+- **PostgreSQL** - Robust database foundation  
+- **Express.js** - Web application framework
+- **Node.js** - Runtime environment
+- **JWT** - Secure authentication tokens
+- **Cookie-Session** - Session management
+- **Telegraf** - Telegram Bot framework
+
+---
+
+**AutoMax** - Premium Car Sales Platform | Built with ❤️ using Node.js

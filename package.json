@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-mvp",
+  "name": "automax-car-sales",
   "version": "1.0.0",
-  "description": "Node.js MVP application with SMS and Google authentication",
+  "description": "AutoMax - Premium Car Sales Platform with SMS authentication, session management, and vehicle inventory system",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -10,16 +10,23 @@
     "db:migrate": "node scripts/migrate.js",
     "db:rollback": "node scripts/rollback.js",
     "db:setup": "node scripts/setup-db.js",
+    "db:status": "node scripts/migrate.js --status",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "nodejs",
     "express",
+    "postgresql",
     "authentication",
     "sms",
-    "google-oauth"
+    "car-sales",
+    "inventory",
+    "twilio",
+    "jwt",
+    "session-management",
+    "automax"
   ],
-  "author": "Your Name",
+  "author": "AutoMax Development Team",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
