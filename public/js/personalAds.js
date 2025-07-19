@@ -626,6 +626,27 @@ class PersonalAdsManager {
         this.clearValidation();
         
         try {
+            // Ensure image manager is initialized
+            if (!window.imageManager) {
+                // Try to initialize it manually if it doesn't exist
+                const uploadArea = document.getElementById('uploadArea');
+                if (uploadArea && typeof ImageUploadManager !== 'undefined') {
+                    window.imageManager = new ImageUploadManager();
+                }
+            }
+            
+            // Get image data from image manager
+            let imageData = { images: [], primaryImage: null };
+            if (window.imageManager) {
+                imageData = window.imageManager.getImagesData();
+            }
+
+            // Validate that at least one image is uploaded
+            if (!imageData.images || imageData.images.length === 0) {
+                this.showAlert('Please upload at least one image of your car', 'error');
+                return;
+            }
+            
             // Collect form data from both traditional inputs and smart selects
             const formData = new FormData(event.target);
             const adData = {
@@ -650,8 +671,32 @@ class PersonalAdsManager {
                 location_zip: formData.get('location_zip'),
                 is_published: formData.get('is_published') === 'on',
                 features: [], // TODO: Add features input
-                images: [] // TODO: Add image upload
+                images: imageData.images // Include uploaded images
             };
+
+            // Remove empty string values for optional fields to avoid validation errors
+            Object.keys(adData).forEach(key => {
+                if (adData[key] === '' || adData[key] === null) {
+                    delete adData[key];
+                }
+            });
+
+            // Ensure required fields are not deleted
+            const requiredFields = ['title', 'make', 'model', 'year', 'price', 'images'];
+            requiredFields.forEach(field => {
+                if (adData[field] === undefined) {
+                    // Re-add the original value for required fields if they were deleted
+                    if (field === 'images') {
+                        adData[field] = imageData.images;
+                    } else if (field === 'year') {
+                        adData[field] = parseInt(this.getFieldValue('year') || formData.get('year'));
+                    } else if (field === 'price') {
+                        adData[field] = parseFloat(formData.get('price'));
+                    } else {
+                        adData[field] = this.getFieldValue(field) || formData.get(field);
+                    }
+                }
+            });
 
             // Client-side validation
             const validationErrors = this.validateAdData(adData);
@@ -659,8 +704,6 @@ class PersonalAdsManager {
                 this.showValidationErrors(validationErrors);
                 return;
             }
-
-            console.log('Sending ad data:', adData); // Debug log
 
             const response = await fetch('/api/personal-ads', {
                 method: 'POST',
@@ -675,29 +718,19 @@ class PersonalAdsManager {
             if (result.success) {
                 this.showAlert('Ad created successfully!', 'success');
                 event.target.reset();
+                
+                // Clear uploaded images
+                if (window.imageManager) {
+                    window.imageManager.clearImages();
+                }
+                
                 this.populateContactInfo(); // Restore contact info
                 
                 // Switch to My Ads tab and reload
                 this.switchToMyAdsTab();
                 this.loadMyAds();
             } else {
-                console.error('Validation errors:', result.errors);
-                console.error('Full result:', result);
-                
-                // Log each error in detail
                 if (result.errors && result.errors.length > 0) {
-                    result.errors.forEach((error, index) => {
-                        console.error(`Error ${index + 1}:`, {
-                            field: error.path || error.param || 'unknown',
-                            message: error.msg || error.message || 'No message',
-                            value: error.value || 'No value',
-                            location: error.location || 'unknown',
-                            fullError: error
-                        });
-                        
-                        // Also log the raw error object
-                        console.error(`Raw Error ${index + 1}:`, error);
-                    });
                     this.showServerValidationErrors(result.errors);
                 } else {
                     this.showAlert(result.message || 'Failed to create ad', 'error');

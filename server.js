@@ -17,6 +17,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const adminRoutes = require('./routes/admin');
 const personalAdsRoutes = require('./routes/personalAds');
+const imageRoutes = require('./routes/images');
 
 // Rate limiting
 const limiter = rateLimit({
@@ -65,6 +66,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/personal-ads', personalAdsRoutes);
+app.use('/api/images', imageRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {

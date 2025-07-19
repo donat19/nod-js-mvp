@@ -414,6 +414,181 @@
             color: #6c757d;
         }
 
+        /* Image Upload Styles */
+        .image-upload-container {
+            margin-top: 10px;
+        }
+
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(102, 126, 234, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: #5a6fd8;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: #4c63d2;
+            background: rgba(102, 126, 234, 0.15);
+            transform: scale(1.02);
+        }
+
+        .upload-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .upload-placeholder h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .upload-placeholder p {
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .upload-info {
+            font-size: 0.9rem;
+            color: #95a5a6 !important;
+        }
+
+        .image-preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .image-preview {
+            position: relative;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .image-preview:hover {
+            transform: translateY(-5px);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-preview-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .image-preview:hover .image-preview-overlay {
+            opacity: 1;
+        }
+
+        .image-preview-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .image-preview-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .image-preview-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .image-preview-btn.delete {
+            color: #e74c3c;
+        }
+
+        .image-preview-btn.primary {
+            color: #667eea;
+        }
+
+        .image-preview-primary {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .upload-progress {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .image-upload-error {
+            background: #ffeaa7;
+            color: #d63031;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -708,6 +883,33 @@
                         </label>
                     </div>
 
+                    <!-- Image Upload Section -->
+                    <div class="form-group">
+                        <label for="images">Car Images *</label>
+                        <div class="image-upload-container">
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-placeholder">
+                                    <i>📷</i>
+                                    <h4>Upload Car Images</h4>
+                                    <p>Click to select or drag & drop images here</p>
+                                    <p class="upload-info">Support: JPG, PNG, WebP • Max 30 images • Auto-compressed</p>
+                                </div>
+                                <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                            </div>
+                            
+                            <div class="image-preview-container" id="imagePreviewContainer">
+                                <!-- Image previews will be added here -->
+                            </div>
+                            
+                            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <div class="progress-text" id="progressText">Uploading images...</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Create Ad</button>
                 </form>
             </div>
@@ -732,6 +934,7 @@
 
     <script src="js/session.js"></script>
     <script src="js/carDataProcessor.js"></script>
+    <script src="js/imageUpload.js"></script>
     <script src="js/personalAds.js"></script>
 </body>
 </html>
