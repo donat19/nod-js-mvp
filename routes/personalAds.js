@@ -81,6 +81,55 @@ const validatePersonalAd = [
     .optional({ values: 'falsy' })
     .isEmail()
     .withMessage('Contact email must be valid'),
+  body('body_type')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Body type must be valid'),
+  body('exterior_color')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 30 })
+    .withMessage('Exterior color must be valid'),
+  body('interior_color')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 30 })
+    .withMessage('Interior color must be valid'),
+  body('engine_cc')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Engine displacement must be a positive number'),
+  body('drivetrain')
+    .optional()
+    .trim()
+    .isIn(['FWD', 'RWD', 'AWD', '4WD', 'Front-wheel drive', 'Rear-wheel drive', 'All-wheel drive', 'Four-wheel drive'])
+    .withMessage('Drivetrain must be valid'),
+  body('vin')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 17 })
+    .withMessage('VIN must be valid'),
+  body('description')
+    .optional()
+    .trim()
+    .isLength({ max: 2000 })
+    .withMessage('Description must be less than 2000 characters'),
+  body('location_city')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('City must be valid'),
+  body('location_state')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('State/Province must be valid'),
+  body('location_zip')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 20 })
+    .withMessage('ZIP/Postal code must be valid'),
   body('features')
     .optional()
     .isArray()
@@ -115,8 +164,12 @@ router.get('/', [
            normalizedValue.includes('amt');
   }),
   query('body_type').optional().trim(),
+  query('exterior_color').optional().trim(),
+  query('interior_color').optional().trim(),
+  query('drivetrain').optional().trim(),
   query('location_city').optional().trim(),
   query('location_state').optional().trim(),
+  query('location_zip').optional().trim(),
   query('limit').optional().isInt({ min: 1, max: 100 }),
   query('offset').optional().isInt({ min: 0 })
 ], async (req, res) => {
@@ -141,8 +194,12 @@ router.get('/', [
       fuel_type: req.query.fuel_type,
       transmission: req.query.transmission,
       body_type: req.query.body_type,
+      exterior_color: req.query.exterior_color,
+      interior_color: req.query.interior_color,
+      drivetrain: req.query.drivetrain,
       location_city: req.query.location_city,
       location_state: req.query.location_state,
+      location_zip: req.query.location_zip,
       features: req.query.features ? JSON.parse(req.query.features) : undefined,
       limit: req.query.limit ? parseInt(req.query.limit) : 20,
       offset: req.query.offset ? parseInt(req.query.offset) : 0
@@ -230,6 +287,8 @@ router.post('/', requireAuth, validatePersonalAd, async (req, res) => {
       body_type: req.body.body_type,
       exterior_color: req.body.exterior_color,
       interior_color: req.body.interior_color,
+      engine_cc: req.body.engine_cc,
+      drivetrain: req.body.drivetrain,
       vin: req.body.vin,
       description: req.body.description,
       features: req.body.features || [],
@@ -347,6 +406,8 @@ router.put('/:id', requireAuth, [
       body_type: req.body.body_type,
       exterior_color: req.body.exterior_color,
       interior_color: req.body.interior_color,
+      engine_cc: req.body.engine_cc,
+      drivetrain: req.body.drivetrain,
       vin: req.body.vin,
       description: req.body.description,
       features: req.body.features || [],
