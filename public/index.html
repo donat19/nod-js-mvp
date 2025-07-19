@@ -4,6 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoMax - Premium Car Sales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        section h3 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        section p {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        #action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button, .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover, .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        #logout-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        #logout-btn:hover {
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
+        }
+
+        .highlight {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            #action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -11,28 +137,29 @@
     </header>
     
     <!-- Content for logged out users -->
-    <div id="guest-content">
+    <div id="guest-content" class="container">
         <section id="welcome-guest">
             <h2>Welcome to AutoMax</h2>
+            <p>Discover premium vehicles and create your own car listings on our marketplace.</p>
             <p>Please log in to access your account and personalized features.</p>
         </section>
         
         <div id="auth-buttons">
-            <a href="login.html">
+            <a href="login.html" class="btn">
                 <button type="button">Login / Sign Up</button>
             </a>
         </div>
     </div>
     
     <!-- Content for logged in users -->
-    <div id="user-content" style="display: none;">
+    <div id="user-content" class="container" style="display: none;">
         <section id="user-welcome">
-            <h2>✅ You are logged in as <span id="user-name">User</span></h2>
-            <p>Welcome to your AutoMax account dashboard.</p>
+            <h2>✅ Welcome back, <span id="user-name" class="highlight">User</span>!</h2>
+            <p>Your AutoMax account dashboard is ready.</p>
         </section>
 
         <section id="account-info">
-            <h3>Your Account Information</h3>
+            <h3>📋 Your Account Information</h3>
             <p><strong>Name:</strong> <span id="display-name">-</span></p>
             <p><strong>Phone:</strong> <span id="display-phone">-</span></p>
             <p><strong>Email:</strong> <span id="display-email">-</span></p>
@@ -40,17 +167,21 @@
         </section>
         
         <section id="user-actions">
-            <h3>Account Actions</h3>
+            <h3>🚗 Quick Actions</h3>
             <div id="action-buttons">
-                <a href="dashboard.html">
-                    <button type="button">Go to Dashboard</button>
+                <a href="dashboard.html" class="btn">
+                    Dashboard
                 </a>
                 
-                <a href="settings.html">
-                    <button type="button">Account Settings</button>
+                <a href="my-ads.html" class="btn">
+                    🔖 My Car Ads
                 </a>
                 
-                <button type="button" id="logout-btn">Logout</button>
+                <a href="settings.html" class="btn">
+                    ⚙️ Account Settings
+                </a>
+                
+                <button type="button" id="logout-btn">🚪 Logout</button>
             </div>
         </section>
     </div>

@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 3000;
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const adminRoutes = require('./routes/admin');
+const personalAdsRoutes = require('./routes/personalAds');
 
 // Rate limiting
 const limiter = rateLimit({
@@ -53,10 +54,17 @@ app.use(cookieSession({
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve car data JSON file
+app.get('/api/car-data', (req, res) => {
+  const carDataPath = path.join(__dirname, 'all_car_json', 'car_data_with_specs.json');
+  res.sendFile(carDataPath);
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/personal-ads', personalAdsRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {
@@ -73,6 +81,10 @@ app.get('/dashboard', (req, res) => {
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.get('/my-ads', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'my-ads.html'));
 });
 
 // 404 handler
