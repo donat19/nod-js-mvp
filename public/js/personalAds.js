@@ -962,6 +962,22 @@ class PersonalAdsManager {
         const publishStatus = ad.is_published ? 'Published' : 'Draft';
         const publishStatusClass = ad.is_published ? 'status-active' : 'status-paused';
 
+        // Handle images
+        let imagesHtml = '';
+        if (ad.images && ad.images.length > 0) {
+            const primaryImage = ad.images[0]; // Use first image as primary
+            const imageCount = ad.images.length;
+            
+            imagesHtml = `
+                <div class="ad-images">
+                    <div class="ad-primary-image">
+                        <img src="${primaryImage}" alt="${this.escapeHtml(ad.title)}" loading="lazy">
+                        ${imageCount > 1 ? `<div class="image-count">+${imageCount - 1} more</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
         const actionsHtml = isOwn ? `
             <div class="ad-actions">
                 ${!ad.is_published ? 
@@ -983,6 +999,8 @@ class PersonalAdsManager {
 
         return `
             <div class="ad-card">
+                ${imagesHtml}
+                
                 <div class="ad-header">
                     <div>
                         <div class="ad-title">${this.escapeHtml(ad.title)}</div>
