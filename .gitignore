@@ -1,26 +1,14 @@
-# Dependencies
+# Environment variables (contains sensitive credentials)
+.env
+
+# Dependency directories
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-
-# Environment variables and sensitive config
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-config/production.json
-config/local.json
-
-# Logs
-logs/
-*.log
-lerna-debug.log*
 
 # Runtime data
-pids/
+pids
 *.pid
 *.seed
 *.pid.lock
@@ -28,62 +16,21 @@ pids/
 # Coverage directory used by tools like istanbul
 coverage/
 *.lcov
+
+# nyc test coverage
 .nyc_output
 
-# Build outputs
-dist/
-build/
-out/
+# Grunt intermediate storage
+.grunt
 
-# Database
-*.sqlite
-*.sqlite3
-*.db
-database/backups/
-database/dumps/
+# Bower dependency directory
+bower_components
 
-# Telegram bot data
-telegram_sessions/
-bot_data/
+# node-waf configuration
+.lock-wscript
 
-# Test files
-test-results/
-test-reports/
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*.sublime-project
-*.sublime-workspace
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
-
-# Temporary files
-tmp/
-temp/
-.tmp/
-
-# Cache directories
-.cache/
-.parcel-cache/
-.next/
-.nuxt/
-
-# ESLint cache
-.eslintcache
-
-# Stylelint cache
-.stylelintcache
+# Compiled binary addons
+build/Release
 
 # Optional npm cache directory
 .npm
@@ -107,26 +54,49 @@ temp/
 .yarn-integrity
 
 # dotenv environment variables file
-.env.test
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
+# parcel-bundler cache
+.cache
+.parcel-cache
 
-# pm2 logs
-.pm2/
+# Next.js build output
+.next
 
-# SSL certificates
-*.pem
-*.key
-*.crt
-*.csr
+# Nuxt.js build / generate output
+.nuxt
+dist
 
-# Backup files
-*.backup
-*.bak
-*.old
+# Gatsby files
+.cache/
+public
 
-# Local development files
-local/
-development/
-.local/
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Logs
+logs
+*.log
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
