@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIN Lookup Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .vin-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 2px dashed #667eea;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        /* VIN Auto-fill highlighting styles */
+        .vin-auto-filled {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .vin-auto-filled::before {
+            content: "✓ Auto-filled";
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .vin-needs-input {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            position: relative;
+            animation: gentlePulse 2s infinite;
+            transition: all 0.3s ease;
+        }
+
+        .vin-needs-input::before {
+            content: "⚠ Needs input";
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background: #ffc107;
+            color: #212529;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(255, 193, 7, 0.1);
+            }
+        }
+
+        .vin-auto-filled:focus-within,
+        .vin-needs-input:focus-within {
+            background: white;
+            border: 2px solid #667eea;
+            animation: none;
+        }
+
+        .vin-auto-filled:focus-within::before,
+        .vin-needs-input:focus-within::before {
+            display: none;
+        }
+        
+        .flex {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        #vinLookupStatus {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚗 VIN Lookup Test</h1>
+        
+        <div class="vin-section">
+            <label for="vin_lookup">🔍 VIN Lookup (Test with real VIN)</label>
+            <div class="flex">
+                <div class="flex-1">
+                    <input type="text" id="vin_lookup" 
+                           placeholder="Enter 17-character VIN (e.g., 1HGBH41JXMN109186)"
+                           maxlength="17" style="text-transform: uppercase;">
+                    <small>Try: 1HGBH41JXMN109186 (Honda Civic) or WBANE53596CM00813 (BMW)</small>
+                </div>
+                <button id="vinLookupBtn" class="btn btn-primary">🔍 Lookup VIN</button>
+                <button id="clearHighlightingBtn" class="btn btn-secondary">Clear Highlights</button>
+            </div>
+            <div id="vinLookupStatus"></div>
+        </div>
+        
+        <form>
+            <h3>Vehicle Information</h3>
+            
+            <div class="form-group">
+                <label for="vin">VIN (Auto-filled from lookup above)</label>
+                <input type="text" id="vin" readonly style="background-color: #f8f9fa;">
+            </div>
+            
+            <div class="form-group">
+                <label for="title">Ad Title</label>
+                <input type="text" id="title" placeholder="e.g., 2020 Honda Civic - Excellent Condition">
+            </div>
+            
+            <div class="form-group">
+                <label for="make">Make</label>
+                <input type="text" id="make" placeholder="e.g., Honda">
+            </div>
+            
+            <div class="form-group">
+                <label for="model">Model</label>
+                <input type="text" id="model" placeholder="e.g., Civic">
+            </div>
+            
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input type="text" id="year" placeholder="e.g., 2020">
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" placeholder="25000">
+            </div>
+            
+            <div class="form-group">
+                <label for="mileage">Mileage</label>
+                <input type="number" id="mileage" placeholder="50000">
+            </div>
+            
+            <div class="form-group">
+                <label for="fuel_type">Fuel Type</label>
+                <input type="text" id="fuel_type" placeholder="e.g., Gasoline">
+            </div>
+            
+            <div class="form-group">
+                <label for="transmission">Transmission</label>
+                <input type="text" id="transmission" placeholder="e.g., Automatic">
+            </div>
+            
+            <div class="form-group">
+                <label for="body_type">Body Type</label>
+                <input type="text" id="body_type" placeholder="e.g., Sedan">
+            </div>
+            
+            <div class="form-group">
+                <label for="exterior_color">Exterior Color</label>
+                <input type="text" id="exterior_color" placeholder="e.g., White">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" rows="4" placeholder="Describe your vehicle..."></textarea>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        class VINLookupDemo {
+            constructor() {
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                const vinLookupBtn = document.getElementById('vinLookupBtn');
+                const vinLookupInput = document.getElementById('vin_lookup');
+                const clearHighlightingBtn = document.getElementById('clearHighlightingBtn');
+
+                if (vinLookupBtn && vinLookupInput) {
+                    vinLookupBtn.addEventListener('click', () => this.handleVinLookup());
+                    
+                    vinLookupInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.handleVinLookup();
+                        }
+                    });
+                    
+                    vinLookupInput.addEventListener('input', (e) => {
+                        e.target.value = e.target.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, '');
+                    });
+                }
+
+                if (clearHighlightingBtn) {
+                    clearHighlightingBtn.addEventListener('click', () => {
+                        this.clearVinHighlighting();
+                        this.showVinStatus('Highlighting cleared', 'info');
+                    });
+                }
+
+                // Add input listeners to remove highlighting when user types
+                const fields = ['title', 'make', 'model', 'year', 'price', 'mileage', 'fuel_type', 'transmission', 'body_type', 'exterior_color', 'description'];
+                fields.forEach(fieldName => {
+                    const field = document.getElementById(fieldName);
+                    if (field) {
+                        field.addEventListener('input', (e) => this.removeHighlightingOnInput(e.target));
+                        field.addEventListener('focus', (e) => this.removeHighlightingOnInput(e.target));
+                    }
+                });
+            }
+
+            async handleVinLookup() {
+                const vinInput = document.getElementById('vin_lookup');
+                const vinLookupBtn = document.getElementById('vinLookupBtn');
+                const statusDiv = document.getElementById('vinLookupStatus');
+                
+                if (!vinInput || !vinLookupBtn || !statusDiv) {
+                    console.error('VIN lookup elements not found');
+                    return;
+                }
+
+                const vin = vinInput.value.trim();
+                
+                if (vin.length !== 17) {
+                    this.showVinStatus('VIN must be exactly 17 characters long', 'error');
+                    return;
+                }
+
+                const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
+                if (!vinRegex.test(vin)) {
+                    this.showVinStatus('Invalid VIN format. VIN should contain only letters and numbers (excluding I, O, Q)', 'error');
+                    return;
+                }
+
+                vinLookupBtn.disabled = true;
+                vinLookupBtn.innerHTML = '🔄 Looking up...';
+                this.showVinStatus('Looking up VIN information...', 'loading');
+
+                try {
+                    const response = await fetch('/api/vin/lookup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ vin: vin })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.showVinStatus(`✅ VIN decoded successfully! Found: ${data.vehicleInfo.year} ${data.vehicleInfo.make} ${data.vehicleInfo.model}`, 'success');
+                        this.fillFormFromVinData(data.vehicleInfo, vin);
+                    } else {
+                        this.showVinStatus(`❌ ${data.message}`, 'error');
+                    }
+
+                } catch (error) {
+                    console.error('VIN lookup error:', error);
+                    this.showVinStatus('❌ VIN lookup failed. Please check your internet connection and try again.', 'error');
+                } finally {
+                    vinLookupBtn.disabled = false;
+                    vinLookupBtn.innerHTML = '🔍 Lookup VIN';
+                }
+            }
+
+            fillFormFromVinData(vehicleInfo, vin) {
+                this.clearVinHighlighting();
+                
+                // Fill VIN field
+                const vinField = document.getElementById('vin');
+                if (vinField) {
+                    vinField.value = vin;
+                    this.highlightAutoFilledField(vinField.parentElement, true);
+                }
+
+                const fieldMappings = {
+                    'make': vehicleInfo.make,
+                    'model': vehicleInfo.model,
+                    'year': vehicleInfo.year,
+                    'body_type': vehicleInfo.body_type || vehicleInfo.vehicle_type,
+                    'fuel_type': this.mapFuelType(vehicleInfo.fuel_type),
+                    'transmission': this.mapTransmissionType(vehicleInfo.transmission),
+                };
+
+                const autoFilledFields = [];
+                Object.entries(fieldMappings).forEach(([fieldName, value]) => {
+                    if (value) {
+                        const field = document.getElementById(fieldName);
+                        if (field) {
+                            field.value = value;
+                            autoFilledFields.push(fieldName);
+                            this.highlightAutoFilledField(field.parentElement, true);
+                        }
+                    }
+                });
+
+                // Auto-generate title
+                if (vehicleInfo.year && vehicleInfo.make && vehicleInfo.model) {
+                    const autoTitle = `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`;
+                    const titleField = document.getElementById('title');
+                    if (titleField && (!titleField.value || titleField.value.trim() === '')) {
+                        titleField.value = autoTitle;
+                        this.highlightAutoFilledField(titleField.parentElement, true);
+                        autoFilledFields.push('title');
+                    }
+                }
+
+                this.highlightEmptyFields(autoFilledFields);
+
+                vinInput = document.getElementById('vin_lookup');
+                if (vinInput) {
+                    vinInput.value = '';
+                }
+
+                const filledCount = autoFilledFields.length;
+                setTimeout(() => {
+                    this.showVinStatus(`🟢 Green = Auto-filled from VIN | 🟡 Yellow = Needs your input`, 'info');
+                }, 1000);
+            }
+
+            highlightAutoFilledField(fieldContainer, isAutoFilled) {
+                if (!fieldContainer) return;
+                
+                if (isAutoFilled) {
+                    fieldContainer.classList.add('vin-auto-filled');
+                    fieldContainer.classList.remove('vin-needs-input');
+                } else {
+                    fieldContainer.classList.add('vin-needs-input');
+                    fieldContainer.classList.remove('vin-auto-filled');
+                }
+            }
+
+            highlightEmptyFields(autoFilledFields) {
+                const importantFields = ['price', 'mileage', 'exterior_color', 'description'];
+
+                importantFields.forEach(fieldName => {
+                    if (!autoFilledFields.includes(fieldName)) {
+                        const field = document.getElementById(fieldName);
+                        if (field && !field.value.trim()) {
+                            this.highlightAutoFilledField(field.parentElement, false);
+                        }
+                    }
+                });
+            }
+
+            clearVinHighlighting() {
+                const highlightedElements = document.querySelectorAll('.vin-auto-filled, .vin-needs-input');
+                highlightedElements.forEach(element => {
+                    element.classList.remove('vin-auto-filled', 'vin-needs-input');
+                });
+            }
+
+            removeHighlightingOnInput(targetElement) {
+                const fieldContainer = targetElement.closest('.form-group');
+                if (fieldContainer) {
+                    fieldContainer.classList.remove('vin-auto-filled', 'vin-needs-input');
+                }
+            }
+
+            showVinStatus(message, type) {
+                const statusDiv = document.getElementById('vinLookupStatus');
+                if (!statusDiv) return;
+
+                statusDiv.style.display = 'block';
+                statusDiv.className = `alert alert-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'}`;
+                statusDiv.innerHTML = message;
+
+                if (type === 'success') {
+                    setTimeout(() => {
+                        statusDiv.style.display = 'none';
+                    }, 5000);
+                }
+            }
+
+            mapFuelType(fuelType) {
+                if (!fuelType) return null;
+                
+                const fuelMappings = {
+                    'gasoline': 'gasoline',
+                    'gas': 'gasoline',
+                    'petrol': 'gasoline',
+                    'diesel': 'diesel',
+                    'electric': 'electric',
+                    'hybrid': 'hybrid',
+                    'plug-in hybrid': 'hybrid',
+                };
+
+                const normalizedFuel = fuelType.toLowerCase();
+                return fuelMappings[normalizedFuel] || fuelType;
+            }
+
+            mapTransmissionType(transmission) {
+                if (!transmission) return null;
+                
+                const transmissionMappings = {
+                    'automatic': 'automatic',
+                    'manual': 'manual',
+                    'cvt': 'cvt',
+                    'continuously variable': 'cvt',
+                    'dual clutch': 'manual',
+                    'automated manual': 'manual'
+                };
+
+                const normalizedTrans = transmission.toLowerCase();
+                for (const [key, value] of Object.entries(transmissionMappings)) {
+                    if (normalizedTrans.includes(key)) {
+                        return value;
+                    }
+                }
+                
+                return transmission;
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new VINLookupDemo();
+        });
+    </script>
+</body>
+</html>

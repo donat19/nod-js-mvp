@@ -42,35 +42,139 @@ router.post('/lookup', async (req, res) => {
         const results = response.data.Results;
         const vehicleInfo = {};
 
-        // Map VPIC fields to our form fields
+        // Map VPIC fields to our form fields - comprehensive mapping
         const fieldMappings = {
+            // Basic Vehicle Info
             'Make': 'make',
             'Model': 'model',
             'Model Year': 'year',
             'Body Class': 'body_type',
             'Vehicle Type': 'vehicle_type',
             'Fuel Type - Primary': 'fuel_type',
+            'Fuel Type - Secondary': 'fuel_type_secondary',
+            'Series': 'series',
+            'Trim': 'trim',
+            'Vehicle Descriptor': 'vehicle_descriptor',
+            
+            // Manufacturer Information
+            'Manufacturer Name': 'manufacturer',
+            'Plant City': 'plant_city',
+            'Plant State': 'plant_state',
+            'Plant Country': 'plant_country',
+            'Plant Company Name': 'plant_company',
+            
+            // Engine Specifications
             'Engine Number of Cylinders': 'engine_cylinders',
             'Engine Configuration': 'engine_configuration',
             'Engine Model': 'engine_model',
             'Displacement (CC)': 'engine_displacement_cc',
             'Displacement (CI)': 'engine_displacement_ci',
             'Displacement (L)': 'engine_displacement_l',
+            'Engine Power (kW)': 'engine_power_kw',
+            'Engine Brake (HP)': 'engine_power_hp',
+            'Engine Stroke Cycles': 'engine_stroke_cycles',
+            'Engine Manufacturer': 'engine_manufacturer',
+            'Turbo': 'turbo',
+            'Supercharger': 'supercharger',
+            'Valve Train Design': 'valve_train',
+            'Injection Type': 'injection_type',
+            'Compression Ratio': 'compression_ratio',
+            'Cooling Type': 'cooling_type',
+            'Engine Head': 'engine_head',
+            'Engine Block': 'engine_block',
+            
+            // Transmission & Drivetrain
             'Transmission Style': 'transmission',
+            'Transmission Speeds': 'transmission_speeds',
             'Drive Type': 'drive_type',
+            'Axles': 'axles',
+            'Axle Ratio': 'axle_ratio',
+            
+            // Dimensions & Weight
             'Doors': 'doors',
             'Windows': 'windows',
+            'Wheel Base (inches)': 'wheelbase_inches',
             'Wheel Base Type': 'wheelbase_type',
             'Track Width (inches)': 'track_width',
             'Gross Vehicle Weight Rating From': 'gvwr_from',
             'Gross Vehicle Weight Rating To': 'gvwr_to',
-            'Manufacturer Name': 'manufacturer',
-            'Plant City': 'plant_city',
-            'Plant State': 'plant_state',
-            'Plant Country': 'plant_country',
-            'Series': 'series',
-            'Trim': 'trim',
-            'Vehicle Descriptor': 'vehicle_descriptor',
+            'Curb Weight (pounds)': 'curb_weight',
+            'Gross Combined Weight Rating From': 'gcwr_from',
+            'Gross Combined Weight Rating To': 'gcwr_to',
+            'GVWR Class': 'gvwr_class',
+            
+            // Safety Features
+            'Driver Air Bag Locations': 'airbag_driver',
+            'Passenger Air Bag Locations': 'airbag_passenger',
+            'Air Bag Locatons': 'airbag_locations',
+            'Curtain Air Bag Locations': 'airbag_curtain',
+            'Knee Air Bag Locations': 'airbag_knee',
+            'Side Air Bag Locations': 'airbag_side',
+            'Seat Belt Type': 'seatbelt_type',
+            'Pretensioner': 'seatbelt_pretensioner',
+            'TPMS': 'tpms',
+            'Electronic Stability Control (ESC)': 'esc',
+            'Traction Control': 'traction_control',
+            'Anti-lock Braking System (ABS)': 'abs',
+            'Crash Test Rating': 'crash_rating',
+            
+            // Additional Features
+            'Trim2': 'trim_level',
+            'Entertainment System': 'entertainment_system',
+            'Steering Location': 'steering_location',
+            'Brake System Type': 'brake_system',
+            'Brake System Description': 'brake_description',
+            'Front Brake Type': 'brake_front',
+            'Rear Brake Type': 'brake_rear',
+            'Suspension Type - Front': 'suspension_front',
+            'Suspension Type - Rear': 'suspension_rear',
+            'Spring Type - Front': 'spring_front',
+            'Spring Type - Rear': 'spring_rear',
+            'Steering Type': 'steering_type',
+            
+            // Wheels & Tires
+            'Wheel Size Front (inches)': 'wheel_size_front',
+            'Wheel Size Rear (inches)': 'wheel_size_rear',
+            'Tire Size Front': 'tire_size_front',
+            'Tire Size Rear': 'tire_size_rear',
+            
+            // Electrical
+            'Battery Type': 'battery_type',
+            'Battery Info': 'battery_info',
+            'Battery Cells': 'battery_cells',
+            'Battery Current (Amps)': 'battery_current',
+            'Battery Voltage (Volts)': 'battery_voltage',
+            'Battery Energy (kWh)': 'battery_energy',
+            'Charging Level': 'charging_level',
+            'Motor Type': 'motor_type',
+            'Motor Location': 'motor_location',
+            'Electric Vehicle Type': 'ev_type',
+            
+            // Other
+            'Bus Floor Configuration': 'bus_floor_config',
+            'Bus Type': 'bus_type',
+            'Motorcycle Suspension Type': 'motorcycle_suspension',
+            'Motorcycle Chassis Type': 'motorcycle_chassis',
+            'Trailer Type Connection': 'trailer_connection',
+            'Trailer Body Type': 'trailer_body_type',
+            'Semi-automatic Transmission': 'semi_auto_transmission',
+            'Adaptive Driving Beam (ADB)': 'adaptive_driving_beam',
+            'Adaptive Cruise Control (ACC)': 'adaptive_cruise_control',
+            'Blind Spot Warning (BSW)': 'blind_spot_warning',
+            'Forward Collision Warning (FCW)': 'forward_collision_warning',
+            'Lane Departure Warning (LDW)': 'lane_departure_warning',
+            'Lane Keeping Support (LKS)': 'lane_keeping_support',
+            'Backup Camera': 'backup_camera',
+            'Parking Assist': 'parking_assist',
+            'Keyless Ignition': 'keyless_ignition',
+            'Daytime Running Light (DRL)': 'daytime_running_lights',
+            'Headlamp Light Source': 'headlamp_light_source',
+            'Semiautomatic Headlamp Beam Switching': 'auto_headlamp_switching',
+            'Auto-Dimming Rearview Mirror': 'auto_dimming_mirror',
+            'Lower Beam Headlamp Light Source': 'headlamp_lower_beam',
+            'Upper Beam Headlamp Light Source': 'headlamp_upper_beam',
+            
+            // Error handling
             'Error Code': 'error_code',
             'Error Text': 'error_text'
         };

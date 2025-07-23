@@ -462,6 +462,91 @@
             box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
         }
 
+        /* VIN Auto-fill highlighting styles */
+        .vin-auto-filled {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .vin-auto-filled::before {
+            content: "✓ Auto-filled";
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .vin-needs-input {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            position: relative;
+            animation: gentlePulse 2s infinite;
+            transition: all 0.3s ease;
+        }
+
+        .vin-needs-input::before {
+            content: "⚠ Needs input";
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background: #ffc107;
+            color: #212529;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(255, 193, 7, 0.1);
+            }
+        }
+
+        /* Remove highlighting when user starts typing */
+        .vin-auto-filled:focus-within,
+        .vin-needs-input:focus-within {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #667eea;
+            animation: none;
+        }
+
+        .vin-auto-filled:focus-within::before,
+        .vin-needs-input:focus-within::before {
+            display: none;
+        }
+
+        /* Button to clear highlighting */
+        .clear-highlighting-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.2s ease;
+        }
+
+        .clear-highlighting-btn:hover {
+            background: #545b62;
+        }
+
         .loading {
             text-align: center;
             padding: 40px;
@@ -718,6 +803,9 @@
                             <button type="button" id="vinLookupBtn" class="btn btn-primary" style="white-space: nowrap;">
                                 🔍 Lookup VIN
                             </button>
+                            <button type="button" id="clearHighlightingBtn" class="clear-highlighting-btn" style="white-space: nowrap;" title="Clear highlighting">
+                                Clear Highlights
+                            </button>
                         </div>
                         <div id="vinLookupStatus" style="margin-top: 10px; display: none;"></div>
                     </div>
@@ -931,6 +1019,348 @@
                             <small class="form-text text-muted">
                                 This field is automatically filled when you use VIN lookup above
                             </small>
+                        </div>
+                    </div>
+
+                    <!-- Comprehensive Vehicle Specifications (Optional) -->
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid #dee2e6;">
+                        <h4 style="color: #495057; margin-bottom: 20px;">🚗 Detailed Vehicle Specifications (Optional - Auto-filled from VIN)</h4>
+                        
+                        <!-- Manufacturer Information -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: #667eea; margin-bottom: 15px;">🏭 Manufacturer Information</h5>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="manufacturer">Manufacturer</label>
+                                    <input type="text" id="manufacturer" name="manufacturer" class="form-control" 
+                                           placeholder="e.g., General Motors">
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant_country">Country of Manufacture</label>
+                                    <input type="text" id="plant_country" name="plant_country" class="form-control" 
+                                           placeholder="e.g., USA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant_state">Manufacturing State</label>
+                                    <input type="text" id="plant_state" name="plant_state" class="form-control" 
+                                           placeholder="e.g., Ohio">
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant_city">Manufacturing City</label>
+                                    <input type="text" id="plant_city" name="plant_city" class="form-control" 
+                                           placeholder="e.g., Lordstown">
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant_company">Manufacturing Plant</label>
+                                    <input type="text" id="plant_company" name="plant_company" class="form-control" 
+                                           placeholder="e.g., GMNA">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Engine Specifications -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: #667eea; margin-bottom: 15px;">⚙️ Engine Specifications</h5>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="engine_model">Engine Model</label>
+                                    <input type="text" id="engine_model" name="engine_model" class="form-control" 
+                                           placeholder="e.g., LUV">
+                                </div>
+                                <div class="form-group">
+                                    <label for="engine_cylinders">Number of Cylinders</label>
+                                    <input type="number" id="engine_cylinders" name="engine_cylinders" class="form-control" 
+                                           placeholder="e.g., 4">
+                                </div>
+                                <div class="form-group">
+                                    <label for="engine_configuration">Engine Configuration</label>
+                                    <input type="text" id="engine_configuration" name="engine_configuration" class="form-control" 
+                                           placeholder="e.g., In-Line">
+                                </div>
+                                <div class="form-group">
+                                    <label for="engine_displacement_l">Engine Volume (L)</label>
+                                    <input type="text" id="engine_displacement_l" name="engine_displacement_l" class="form-control" 
+                                           placeholder="e.g., 1.4">
+                                </div>
+                                <div class="form-group">
+                                    <label for="engine_displacement_cc">Engine Volume (CC)</label>
+                                    <input type="text" id="engine_displacement_cc" name="engine_displacement_cc" class="form-control" 
+                                           placeholder="e.g., 1400">
+                                </div>
+                                <div class="form-group">
+                                    <label for="valve_train">Timing Type</label>
+                                    <input type="text" id="valve_train" name="valve_train" class="form-control" 
+                                           placeholder="e.g., DOHC">
+                                </div>
+                                <div class="form-group">
+                                    <label for="injection_type">Injection System</label>
+                                    <input type="text" id="injection_type" name="injection_type" class="form-control" 
+                                           placeholder="e.g., MPFI">
+                                </div>
+                                <div class="form-group">
+                                    <label for="turbo">Turbo</label>
+                                    <select id="turbo" name="turbo" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="supercharger">Supercharger</label>
+                                    <select id="supercharger" name="supercharger" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="engine_power_hp">Engine Power (HP)</label>
+                                    <input type="text" id="engine_power_hp" name="engine_power_hp" class="form-control" 
+                                           placeholder="e.g., 138">
+                                </div>
+                                <div class="form-group">
+                                    <label for="compression_ratio">Compression Ratio</label>
+                                    <input type="text" id="compression_ratio" name="compression_ratio" class="form-control" 
+                                           placeholder="e.g., 9.5:1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cooling_type">Cooling Type</label>
+                                    <input type="text" id="cooling_type" name="cooling_type" class="form-control" 
+                                           placeholder="e.g., Liquid">
+                                </div>
+                                <div class="form-group">
+                                    <label for="engine_block">Engine Block Material</label>
+                                    <input type="text" id="engine_block" name="engine_block" class="form-control" 
+                                           placeholder="e.g., Aluminum">
+                                </div>
+                                <div class="form-group">
+                                    <label for="engine_head">Engine Head Material</label>
+                                    <input type="text" id="engine_head" name="engine_head" class="form-control" 
+                                           placeholder="e.g., Aluminum">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Safety Features -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: #667eea; margin-bottom: 15px;">🔒 Safety Features</h5>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="airbag_driver">Driver Airbag</label>
+                                    <input type="text" id="airbag_driver" name="airbag_driver" class="form-control" 
+                                           placeholder="e.g., Driver">
+                                </div>
+                                <div class="form-group">
+                                    <label for="airbag_passenger">Passenger Airbag</label>
+                                    <input type="text" id="airbag_passenger" name="airbag_passenger" class="form-control" 
+                                           placeholder="e.g., Front">
+                                </div>
+                                <div class="form-group">
+                                    <label for="airbag_side">Side Airbags</label>
+                                    <input type="text" id="airbag_side" name="airbag_side" class="form-control" 
+                                           placeholder="e.g., 1st and 2nd Row">
+                                </div>
+                                <div class="form-group">
+                                    <label for="airbag_knee">Knee Airbags</label>
+                                    <input type="text" id="airbag_knee" name="airbag_knee" class="form-control" 
+                                           placeholder="e.g., 1st Row">
+                                </div>
+                                <div class="form-group">
+                                    <label for="airbag_curtain">Curtain Airbags</label>
+                                    <input type="text" id="airbag_curtain" name="airbag_curtain" class="form-control" 
+                                           placeholder="e.g., All Rows">
+                                </div>
+                                <div class="form-group">
+                                    <label for="seatbelt_type">Seat Belt Type</label>
+                                    <input type="text" id="seatbelt_type" name="seatbelt_type" class="form-control" 
+                                           placeholder="e.g., Manual">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tpms">TPMS</label>
+                                    <input type="text" id="tpms" name="tpms" class="form-control" 
+                                           placeholder="e.g., Direct">
+                                </div>
+                                <div class="form-group">
+                                    <label for="abs">Anti-lock Brakes (ABS)</label>
+                                    <select id="abs" name="abs" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="esc">Electronic Stability Control</label>
+                                    <select id="esc" name="esc" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="traction_control">Traction Control</label>
+                                    <select id="traction_control" name="traction_control" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transmission & Drivetrain -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: #667eea; margin-bottom: 15px;">🔧 Transmission & Drivetrain</h5>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="transmission_speeds">Transmission Speeds</label>
+                                    <input type="text" id="transmission_speeds" name="transmission_speeds" class="form-control" 
+                                           placeholder="e.g., 6">
+                                </div>
+                                <div class="form-group">
+                                    <label for="drive_type">Drive Type</label>
+                                    <input type="text" id="drive_type" name="drive_type" class="form-control" 
+                                           placeholder="e.g., Front-Wheel Drive">
+                                </div>
+                                <div class="form-group">
+                                    <label for="axles">Axles</label>
+                                    <input type="text" id="axles" name="axles" class="form-control" 
+                                           placeholder="e.g., 2">
+                                </div>
+                                <div class="form-group">
+                                    <label for="axle_ratio">Axle Ratio</label>
+                                    <input type="text" id="axle_ratio" name="axle_ratio" class="form-control" 
+                                           placeholder="e.g., 3.91">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weight & Dimensions -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: #667eea; margin-bottom: 15px;">📏 Weight & Dimensions</h5>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="gvwr_class">Weight Class</label>
+                                    <input type="text" id="gvwr_class" name="gvwr_class" class="form-control" 
+                                           placeholder="e.g., Class 1: 6,000 lb or less">
+                                </div>
+                                <div class="form-group">
+                                    <label for="curb_weight">Curb Weight (lbs)</label>
+                                    <input type="text" id="curb_weight" name="curb_weight" class="form-control" 
+                                           placeholder="e.g., 2722">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gvwr_from">GVWR From (lbs)</label>
+                                    <input type="text" id="gvwr_from" name="gvwr_from" class="form-control" 
+                                           placeholder="e.g., 4034">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gvwr_to">GVWR To (lbs)</label>
+                                    <input type="text" id="gvwr_to" name="gvwr_to" class="form-control" 
+                                           placeholder="e.g., 4189">
+                                </div>
+                                <div class="form-group">
+                                    <label for="wheelbase_inches">Wheelbase (inches)</label>
+                                    <input type="text" id="wheelbase_inches" name="wheelbase_inches" class="form-control" 
+                                           placeholder="e.g., 99.6">
+                                </div>
+                                <div class="form-group">
+                                    <label for="track_width">Track Width (inches)</label>
+                                    <input type="text" id="track_width" name="track_width" class="form-control" 
+                                           placeholder="e.g., 61.6">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Features -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: #667eea; margin-bottom: 15px;">📦 Additional Features</h5>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="trim_level">Equipment Level</label>
+                                    <input type="text" id="trim_level" name="trim_level" class="form-control" 
+                                           placeholder="e.g., 1LT (medium level)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="entertainment_system">Entertainment System</label>
+                                    <input type="text" id="entertainment_system" name="entertainment_system" class="form-control" 
+                                           placeholder="e.g., MyLink">
+                                </div>
+                                <div class="form-group">
+                                    <label for="backup_camera">Backup Camera</label>
+                                    <select id="backup_camera" name="backup_camera" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="keyless_ignition">Keyless Ignition</label>
+                                    <select id="keyless_ignition" name="keyless_ignition" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adaptive_cruise_control">Adaptive Cruise Control</label>
+                                    <select id="adaptive_cruise_control" name="adaptive_cruise_control" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="blind_spot_warning">Blind Spot Warning</label>
+                                    <select id="blind_spot_warning" name="blind_spot_warning" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lane_departure_warning">Lane Departure Warning</label>
+                                    <select id="lane_departure_warning" name="lane_departure_warning" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="forward_collision_warning">Forward Collision Warning</label>
+                                    <select id="forward_collision_warning" name="forward_collision_warning" class="form-control">
+                                        <option value="">Unknown</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wheels & Tires -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: #667eea; margin-bottom: 15px;">🛞 Wheels & Tires</h5>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="wheel_size_front">Front Wheel Size (inches)</label>
+                                    <input type="text" id="wheel_size_front" name="wheel_size_front" class="form-control" 
+                                           placeholder="e.g., 16">
+                                </div>
+                                <div class="form-group">
+                                    <label for="wheel_size_rear">Rear Wheel Size (inches)</label>
+                                    <input type="text" id="wheel_size_rear" name="wheel_size_rear" class="form-control" 
+                                           placeholder="e.g., 16">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tire_size_front">Front Tire Size</label>
+                                    <input type="text" id="tire_size_front" name="tire_size_front" class="form-control" 
+                                           placeholder="e.g., 215/60R16">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tire_size_rear">Rear Tire Size</label>
+                                    <input type="text" id="tire_size_rear" name="tire_size_rear" class="form-control" 
+                                           placeholder="e.g., 215/60R16">
+                                </div>
+                            </div>
                         </div>
                     </div>
 

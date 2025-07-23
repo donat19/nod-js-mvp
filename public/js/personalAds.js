@@ -84,6 +84,7 @@ class PersonalAdsManager {
         // VIN Lookup functionality
         const vinLookupBtn = document.getElementById('vinLookupBtn');
         const vinLookupInput = document.getElementById('vin_lookup');
+        const clearHighlightingBtn = document.getElementById('clearHighlightingBtn');
         
         if (vinLookupBtn && vinLookupInput) {
             vinLookupBtn.addEventListener('click', () => this.handleVinLookup());
@@ -99,6 +100,14 @@ class PersonalAdsManager {
             // Format VIN input as user types
             vinLookupInput.addEventListener('input', (e) => {
                 e.target.value = e.target.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, '');
+            });
+        }
+
+        // Clear highlighting button
+        if (clearHighlightingBtn) {
+            clearHighlightingBtn.addEventListener('click', () => {
+                this.clearVinHighlighting();
+                this.showAlert('Highlighting cleared', 'info');
             });
         }
 
@@ -516,28 +525,60 @@ class PersonalAdsManager {
         const priceField = document.getElementById('price');
 
         if (titleField) {
-            titleField.addEventListener('input', (e) => this.validateField('title', e.target.value));
+            titleField.addEventListener('input', (e) => {
+                this.validateField('title', e.target.value);
+                this.removeHighlightingOnInput(e.target);
+            });
             titleField.addEventListener('blur', (e) => this.validateField('title', e.target.value));
         }
 
         if (makeField) {
-            makeField.addEventListener('input', (e) => this.validateField('make', e.target.value));
+            makeField.addEventListener('input', (e) => {
+                this.validateField('make', e.target.value);
+                this.removeHighlightingOnInput(e.target);
+            });
             makeField.addEventListener('blur', (e) => this.validateField('make', e.target.value));
         }
 
         if (modelField) {
-            modelField.addEventListener('input', (e) => this.validateField('model', e.target.value));
+            modelField.addEventListener('input', (e) => {
+                this.validateField('model', e.target.value);
+                this.removeHighlightingOnInput(e.target);
+            });
             modelField.addEventListener('blur', (e) => this.validateField('model', e.target.value));
         }
 
         if (yearField) {
-            yearField.addEventListener('input', (e) => this.validateField('year', e.target.value));
+            yearField.addEventListener('input', (e) => {
+                this.validateField('year', e.target.value);
+                this.removeHighlightingOnInput(e.target);
+            });
             yearField.addEventListener('blur', (e) => this.validateField('year', e.target.value));
         }
 
         if (priceField) {
-            priceField.addEventListener('input', (e) => this.validateField('price', e.target.value));
+            priceField.addEventListener('input', (e) => {
+                this.validateField('price', e.target.value);
+                this.removeHighlightingOnInput(e.target);
+            });
             priceField.addEventListener('blur', (e) => this.validateField('price', e.target.value));
+        }
+
+        // Add event listeners for other important fields
+        const otherFields = ['mileage', 'description', 'contact_name', 'contact_phone', 'exterior_color', 'interior_color'];
+        otherFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (field) {
+                field.addEventListener('input', (e) => this.removeHighlightingOnInput(e.target));
+                field.addEventListener('focus', (e) => this.removeHighlightingOnInput(e.target));
+            }
+        });
+    }
+
+    removeHighlightingOnInput(targetElement) {
+        const fieldContainer = targetElement.closest('.form-group');
+        if (fieldContainer) {
+            fieldContainer.classList.remove('vin-auto-filled', 'vin-needs-input');
         }
     }
 
@@ -1298,6 +1339,9 @@ class PersonalAdsManager {
     }
 
     fillFormFromVinData(vehicleInfo, vin) {
+        // Reset any previous highlighting
+        this.clearVinHighlighting();
+        
         // Fill VIN field specifically (it's a regular input, not a smart-select)
         const vinField = document.getElementById('vin');
         if (vinField) {
@@ -1307,10 +1351,7 @@ class PersonalAdsManager {
             // Make it readonly again
             vinField.readOnly = true;
             // Add visual feedback that it was auto-filled
-            vinField.style.backgroundColor = '#e8f5e8';
-            setTimeout(() => {
-                vinField.style.backgroundColor = '#f8f9fa';
-            }, 2000);
+            this.highlightAutoFilledField(vinField.parentElement, true);
         }
 
         // Map and fill basic vehicle information
@@ -1323,12 +1364,137 @@ class PersonalAdsManager {
             'transmission': this.mapTransmissionType(vehicleInfo.transmission),
             'drive_type': vehicleInfo.drive_type,
             'doors': vehicleInfo.doors,
+            'trim': vehicleInfo.trim,
+            'series': vehicleInfo.series,
         };
 
-        // Fill form fields
-        Object.entries(fieldMappings).forEach(([fieldName, value]) => {
-            if (value) {
-                this.setFieldValue(fieldName, value);
+        // Extended vehicle specifications
+        const extendedMappings = {
+            // Manufacturer info
+            'manufacturer': vehicleInfo.manufacturer,
+            'plant_city': vehicleInfo.plant_city,
+            'plant_state': vehicleInfo.plant_state,
+            'plant_country': vehicleInfo.plant_country,
+            'plant_company': vehicleInfo.plant_company,
+            
+            // Engine specifications
+            'engine_cylinders': vehicleInfo.engine_cylinders,
+            'engine_configuration': vehicleInfo.engine_configuration,
+            'engine_model': vehicleInfo.engine_model,
+            'engine_displacement_cc': vehicleInfo.engine_displacement_cc,
+            'engine_displacement_ci': vehicleInfo.engine_displacement_ci,
+            'engine_displacement_l': vehicleInfo.engine_displacement_l,
+            'engine_power_kw': vehicleInfo.engine_power_kw,
+            'engine_power_hp': vehicleInfo.engine_power_hp,
+            'engine_manufacturer': vehicleInfo.engine_manufacturer,
+            'turbo': vehicleInfo.turbo,
+            'supercharger': vehicleInfo.supercharger,
+            'valve_train': vehicleInfo.valve_train,
+            'injection_type': vehicleInfo.injection_type,
+            'compression_ratio': vehicleInfo.compression_ratio,
+            'cooling_type': vehicleInfo.cooling_type,
+            'engine_head': vehicleInfo.engine_head,
+            'engine_block': vehicleInfo.engine_block,
+            
+            // Transmission & drivetrain
+            'transmission_speeds': vehicleInfo.transmission_speeds,
+            'axles': vehicleInfo.axles,
+            'axle_ratio': vehicleInfo.axle_ratio,
+            
+            // Dimensions & weight
+            'wheelbase_inches': vehicleInfo.wheelbase_inches,
+            'track_width': vehicleInfo.track_width,
+            'gvwr_from': vehicleInfo.gvwr_from,
+            'gvwr_to': vehicleInfo.gvwr_to,
+            'gvwr_class': vehicleInfo.gvwr_class,
+            'curb_weight': vehicleInfo.curb_weight,
+            'gcwr_from': vehicleInfo.gcwr_from,
+            'gcwr_to': vehicleInfo.gcwr_to,
+            
+            // Safety features
+            'airbag_driver': vehicleInfo.airbag_driver,
+            'airbag_passenger': vehicleInfo.airbag_passenger,
+            'airbag_locations': vehicleInfo.airbag_locations,
+            'airbag_curtain': vehicleInfo.airbag_curtain,
+            'airbag_knee': vehicleInfo.airbag_knee,
+            'airbag_side': vehicleInfo.airbag_side,
+            'seatbelt_type': vehicleInfo.seatbelt_type,
+            'seatbelt_pretensioner': vehicleInfo.seatbelt_pretensioner,
+            'tpms': vehicleInfo.tpms,
+            'esc': vehicleInfo.esc,
+            'traction_control': vehicleInfo.traction_control,
+            'abs': vehicleInfo.abs,
+            'crash_rating': vehicleInfo.crash_rating,
+            
+            // Additional features
+            'trim_level': vehicleInfo.trim_level,
+            'entertainment_system': vehicleInfo.entertainment_system,
+            'steering_location': vehicleInfo.steering_location,
+            'brake_system': vehicleInfo.brake_system,
+            'brake_description': vehicleInfo.brake_description,
+            'brake_front': vehicleInfo.brake_front,
+            'brake_rear': vehicleInfo.brake_rear,
+            'suspension_front': vehicleInfo.suspension_front,
+            'suspension_rear': vehicleInfo.suspension_rear,
+            'spring_front': vehicleInfo.spring_front,
+            'spring_rear': vehicleInfo.spring_rear,
+            'steering_type': vehicleInfo.steering_type,
+            
+            // Wheels & tires
+            'wheel_size_front': vehicleInfo.wheel_size_front,
+            'wheel_size_rear': vehicleInfo.wheel_size_rear,
+            'tire_size_front': vehicleInfo.tire_size_front,
+            'tire_size_rear': vehicleInfo.tire_size_rear,
+            
+            // Advanced safety & features
+            'adaptive_cruise_control': vehicleInfo.adaptive_cruise_control,
+            'blind_spot_warning': vehicleInfo.blind_spot_warning,
+            'forward_collision_warning': vehicleInfo.forward_collision_warning,
+            'lane_departure_warning': vehicleInfo.lane_departure_warning,
+            'lane_keeping_support': vehicleInfo.lane_keeping_support,
+            'backup_camera': vehicleInfo.backup_camera,
+            'parking_assist': vehicleInfo.parking_assist,
+            'keyless_ignition': vehicleInfo.keyless_ignition,
+            'daytime_running_lights': vehicleInfo.daytime_running_lights,
+            'headlamp_light_source': vehicleInfo.headlamp_light_source,
+            'auto_headlamp_switching': vehicleInfo.auto_headlamp_switching,
+            'auto_dimming_mirror': vehicleInfo.auto_dimming_mirror,
+            
+            // Electric vehicle info
+            'battery_type': vehicleInfo.battery_type,
+            'battery_info': vehicleInfo.battery_info,
+            'battery_cells': vehicleInfo.battery_cells,
+            'battery_current': vehicleInfo.battery_current,
+            'battery_voltage': vehicleInfo.battery_voltage,
+            'battery_energy': vehicleInfo.battery_energy,
+            'charging_level': vehicleInfo.charging_level,
+            'motor_type': vehicleInfo.motor_type,
+            'motor_location': vehicleInfo.motor_location,
+            'ev_type': vehicleInfo.ev_type,
+        };
+
+        // Combine basic and extended mappings
+        const allMappings = { ...fieldMappings, ...extendedMappings };
+
+        // Fill form fields and track which ones were filled
+        const autoFilledFields = [];
+        Object.entries(allMappings).forEach(([fieldName, value]) => {
+            if (value && value !== 'Not Applicable' && value !== '' && value !== 'N/A') {
+                // Try to set field value using smart-select method first
+                const selectElement = document.querySelector(`[data-field="${fieldName}"]`);
+                if (selectElement) {
+                    this.setFieldValue(fieldName, value);
+                    autoFilledFields.push(fieldName);
+                    this.highlightFieldByName(fieldName, true);
+                } else {
+                    // Try to set as regular input field
+                    const inputField = document.getElementById(fieldName);
+                    if (inputField) {
+                        inputField.value = value;
+                        autoFilledFields.push(fieldName);
+                        this.highlightAutoFilledField(inputField.parentElement, true);
+                    }
+                }
             }
         });
 
@@ -1338,6 +1504,8 @@ class PersonalAdsManager {
             const titleField = document.getElementById('title');
             if (titleField && (!titleField.value || titleField.value.trim() === '')) {
                 titleField.value = autoTitle;
+                this.highlightAutoFilledField(titleField.parentElement, true);
+                autoFilledFields.push('title');
             }
         }
 
@@ -1349,9 +1517,13 @@ class PersonalAdsManager {
             setTimeout(() => {
                 if (vehicleInfo.model) {
                     this.setFieldValue('model', vehicleInfo.model);
+                    this.highlightFieldByName('model', true);
                 }
             }, 100);
         }
+
+        // Highlight fields that were NOT auto-filled
+        this.highlightEmptyFields(autoFilledFields);
 
         // Clear VIN lookup input
         const vinInput = document.getElementById('vin_lookup');
@@ -1359,7 +1531,77 @@ class PersonalAdsManager {
             vinInput.value = '';
         }
 
-        this.showAlert('Vehicle information filled from VIN lookup!', 'success');
+        // Show success message with summary
+        const filledCount = autoFilledFields.length;
+        this.showAlert(`Vehicle information filled from VIN lookup! ${filledCount} fields auto-filled. Please complete the highlighted fields.`, 'success');
+        
+        // Show a temporary info message about the highlighting
+        setTimeout(() => {
+            this.showVinStatus('🟢 Green = Auto-filled from VIN | 🟡 Yellow = Needs your input', 'info');
+            setTimeout(() => {
+                const statusDiv = document.getElementById('vinLookupStatus');
+                if (statusDiv) statusDiv.style.display = 'none';
+            }, 8000);
+        }, 1000);
+    }
+
+    highlightFieldByName(fieldName, isAutoFilled) {
+        const selectElement = document.querySelector(`[data-field="${fieldName}"]`);
+        if (selectElement) {
+            this.highlightAutoFilledField(selectElement.parentElement, isAutoFilled);
+        }
+    }
+
+    highlightAutoFilledField(fieldContainer, isAutoFilled) {
+        if (!fieldContainer) return;
+        
+        if (isAutoFilled) {
+            fieldContainer.classList.add('vin-auto-filled');
+            fieldContainer.classList.remove('vin-needs-input');
+        } else {
+            fieldContainer.classList.add('vin-needs-input');
+            fieldContainer.classList.remove('vin-auto-filled');
+        }
+    }
+
+    highlightEmptyFields(autoFilledFields) {
+        // List of important fields that should be highlighted if not auto-filled
+        const importantFields = [
+            'title', 'price', 'mileage', 'condition', 'exterior_color', 
+            'interior_color', 'description', 'contact_name', 'contact_phone'
+        ];
+
+        importantFields.forEach(fieldName => {
+            if (!autoFilledFields.includes(fieldName)) {
+                // Check if field exists and is empty
+                const field = document.getElementById(fieldName);
+                if (field && !field.value.trim()) {
+                    this.highlightAutoFilledField(field.parentElement, false);
+                }
+            }
+        });
+
+        // Also highlight smart-select fields that weren't auto-filled
+        const smartSelectFields = ['make', 'model', 'year', 'body_type', 'fuel_type', 'transmission'];
+        smartSelectFields.forEach(fieldName => {
+            if (!autoFilledFields.includes(fieldName)) {
+                const selectElement = document.querySelector(`[data-field="${fieldName}"]`);
+                if (selectElement) {
+                    const toggle = selectElement.querySelector('.smart-select-toggle .selected-text');
+                    if (toggle && (toggle.textContent === 'Select...' || !toggle.textContent.trim())) {
+                        this.highlightAutoFilledField(selectElement.parentElement, false);
+                    }
+                }
+            }
+        });
+    }
+
+    clearVinHighlighting() {
+        // Remove all VIN-related highlighting classes
+        const highlightedElements = document.querySelectorAll('.vin-auto-filled, .vin-needs-input');
+        highlightedElements.forEach(element => {
+            element.classList.remove('vin-auto-filled', 'vin-needs-input');
+        });
     }
 
     mapFuelType(fuelType) {
