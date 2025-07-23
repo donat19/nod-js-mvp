@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const logger = require('./logger');
 require('dotenv').config();
 
 // PostgreSQL connection pool configuration
@@ -15,12 +16,24 @@ const pool = new Pool({
 });
 
 // Test database connection
-pool.on('connect', () => {
-  console.log('Connected to PostgreSQL database');
+pool.on('connect', (client) => {
+  logger.info('New PostgreSQL client connected', {
+    processId: client.processID,
+    timestamp: new Date().toISOString()
+  });
 });
 
-pool.on('error', (err) => {
-  console.error('PostgreSQL connection error:', err);
+pool.on('error', (err, client) => {
+  logger.error('PostgreSQL connection error', {
+    error: {
+      message: err.message,
+      code: err.code,
+      severity: err.severity,
+      detail: err.detail
+    },
+    processId: client ? client.processID : 'unknown',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Helper function to execute queries
@@ -29,10 +42,30 @@ const query = async (text, params) => {
   try {
     const res = await pool.query(text, params);
     const duration = Date.now() - start;
-    console.log('Executed query', { text, duration, rows: res.rowCount });
+    
+    logger.debug('Database query executed', {
+      query: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+      duration,
+      rowCount: res.rowCount,
+      paramCount: params ? params.length : 0,
+      timestamp: new Date().toISOString()
+    });
+    
     return res;
   } catch (error) {
-    console.error('Database query error:', error);
+    const duration = Date.now() - start;
+    logger.error('Database query error', {
+      query: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+      error: {
+        message: error.message,
+        code: error.code,
+        severity: error.severity,
+        detail: error.detail
+      },
+      duration,
+      paramCount: params ? params.length : 0,
+      timestamp: new Date().toISOString()
+    });
     throw error;
   }
 };
@@ -40,13 +73,37 @@ const query = async (text, params) => {
 // Helper function for transactions
 const transaction = async (callback) => {
   const client = await pool.connect();
+  const transactionId = Math.random().toString(36).substring(7);
+  
   try {
+    logger.debug('Database transaction started', {
+      transactionId,
+      timestamp: new Date().toISOString()
+    });
+    
     await client.query('BEGIN');
     const result = await callback(client);
     await client.query('COMMIT');
+    
+    logger.debug('Database transaction committed', {
+      transactionId,
+      timestamp: new Date().toISOString()
+    });
+    
     return result;
   } catch (error) {
     await client.query('ROLLBACK');
+    
+    logger.error('Database transaction rolled back', {
+      transactionId,
+      error: {
+        message: error.message,
+        code: error.code,
+        severity: error.severity
+      },
+      timestamp: new Date().toISOString()
+    });
+    
     throw error;
   } finally {
     client.release();
@@ -56,10 +113,29 @@ const transaction = async (callback) => {
 // Test connection function
 const testConnection = async () => {
   try {
+    const start = Date.now();
     const result = await query('SELECT NOW()');
+    const duration = Date.now() - start;
+    
+    logger.info('Database connection test successful', {
+      serverTime: result.rows[0].now,
+      duration,
+      timestamp: new Date().toISOString()
+    });
+    
     console.log('Database connection successful:', result.rows[0]);
     return true;
   } catch (error) {
+    logger.error('Database connection test failed', {
+      error: {
+        message: error.message,
+        code: error.code,
+        severity: error.severity,
+        detail: error.detail
+      },
+      timestamp: new Date().toISOString()
+    });
+    
     console.error('Database connection failed:', error.message);
     return false;
   }

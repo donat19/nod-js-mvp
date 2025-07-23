@@ -39,7 +39,8 @@
     "sharp": "^0.34.3",
     "twilio": "^4.11.1",
     "uuid": "^9.0.0",
-    "validator": "^13.9.0"
+    "validator": "^13.9.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

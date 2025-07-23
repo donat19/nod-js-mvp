@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const { testConnection } = require('./config/database');
+const logger = require('./config/logger');
 require('dotenv').config();
 
 const app = express();
@@ -36,7 +37,10 @@ app.use(helmet({
     }
   }
 }));
-app.use(morgan('combined'));
+
+// HTTP request logging using Winston
+app.use(morgan('combined', { stream: logger.stream }));
+
 app.use(cors());
 app.use(limiter);
 app.use(express.json());
@@ -92,7 +96,15 @@ app.get('/my-ads', (req, res) => {
 });
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use((req, res) => {
+  logger.warn('404 - Route not found', {
+    method: req.method,
+    url: req.originalUrl,
+    userAgent: req.headers['user-agent'],
+    clientIP: req.ip || req.connection.remoteAddress,
+    timestamp: new Date().toISOString()
+  });
+  
   // Check if it's an API request
   if (req.originalUrl.startsWith('/api/')) {
     res.status(404).json({ message: 'API route not found' });
@@ -104,18 +116,50 @@ app.use('*', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  logger.error('Unhandled application error', {
+    error: {
+      message: err.message,
+      stack: err.stack,
+      name: err.name
+    },
+    request: {
+      method: req.method,
+      url: req.originalUrl,
+      userAgent: req.headers['user-agent'],
+      clientIP: req.ip || req.connection.remoteAddress,
+      body: req.body ? JSON.stringify(req.body) : undefined
+    },
+    timestamp: new Date().toISOString()
+  });
+  
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 app.listen(PORT, async () => {
+  logger.info('Server starting up', {
+    port: PORT,
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
+  
   console.log(`Server is running on http://localhost:${PORT}`);
   
   // Test database connection on startup
   const dbConnected = await testConnection();
   if (dbConnected) {
+    logger.info('Database connection verified successfully');
     console.log('✅ Database connection verified');
   } else {
+    logger.error('Database connection failed during startup');
     console.log('❌ Database connection failed - check your configuration');
   }
+  
+  logger.info('Server startup completed', {
+    port: PORT,
+    databaseConnected: dbConnected,
+    timestamp: new Date().toISOString()
+  });
 });

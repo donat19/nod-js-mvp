@@ -1,14 +1,30 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const logger = require('../config/logger');
 
 // VIN lookup endpoint
 router.post('/lookup', async (req, res) => {
+    const startTime = Date.now();
+    const clientIP = req.ip || req.connection.remoteAddress;
+    
     try {
         const { vin } = req.body;
         
+        logger.info('VIN lookup request started', {
+            vin: vin ? `${vin.substring(0, 8)}...` : 'undefined', // Log partial VIN for privacy
+            clientIP,
+            userAgent: req.headers['user-agent'],
+            timestamp: new Date().toISOString()
+        });
+        
         // Validate VIN format
         if (!vin || vin.length !== 17) {
+            logger.warn('VIN validation failed - incorrect length', {
+                vin: vin ? `${vin.substring(0, 8)}...` : 'undefined',
+                vinLength: vin ? vin.length : 0,
+                clientIP
+            });
             return res.status(400).json({
                 success: false,
                 message: 'VIN must be exactly 17 characters long'
@@ -21,17 +37,41 @@ router.post('/lookup', async (req, res) => {
         // Validate VIN characters (should only contain alphanumeric, excluding I, O, Q)
         const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
         if (!vinRegex.test(cleanVin)) {
+            logger.warn('VIN validation failed - invalid format', {
+                vin: `${cleanVin.substring(0, 8)}...`,
+                clientIP
+            });
             return res.status(400).json({
                 success: false,
                 message: 'Invalid VIN format. VIN should contain only letters and numbers (excluding I, O, Q)'
             });
         }
 
+        logger.debug('VIN validation passed, calling NHTSA API', {
+            vin: `${cleanVin.substring(0, 8)}...`,
+            clientIP
+        });
+
         // Call NHTSA VPIC API
         const url = `https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${cleanVin}?format=json`;
+        const apiStartTime = Date.now();
         const response = await axios.get(url, { timeout: 10000 });
+        const apiDuration = Date.now() - apiStartTime;
+        
+        logger.info('NHTSA API response received', {
+            vin: `${cleanVin.substring(0, 8)}...`,
+            apiDuration,
+            statusCode: response.status,
+            clientIP
+        });
         
         if (!response.data || !response.data.Results) {
+            logger.error('NHTSA API returned invalid response structure', {
+                vin: `${cleanVin.substring(0, 8)}...`,
+                responseData: response.data ? 'exists but no Results' : 'null/undefined',
+                statusCode: response.status,
+                clientIP
+            });
             return res.status(500).json({
                 success: false,
                 message: 'Unable to decode VIN. Please try again later.'
@@ -189,8 +229,20 @@ router.post('/lookup', async (req, res) => {
             }
         });
 
+        logger.debug('VIN data extraction completed', {
+            vin: `${cleanVin.substring(0, 8)}...`,
+            fieldsExtracted: Object.keys(vehicleInfo).length,
+            clientIP
+        });
+
         // Check if VIN decode was successful
         if (vehicleInfo.error_code && vehicleInfo.error_code !== "0") {
+            logger.warn('VIN decode returned error code', {
+                vin: `${cleanVin.substring(0, 8)}...`,
+                errorCode: vehicleInfo.error_code,
+                errorText: vehicleInfo.error_text,
+                clientIP
+            });
             return res.status(400).json({
                 success: false,
                 message: vehicleInfo.error_text || 'Unable to decode VIN',
@@ -200,12 +252,29 @@ router.post('/lookup', async (req, res) => {
 
         // Ensure we have basic vehicle info
         if (!vehicleInfo.make || !vehicleInfo.model || !vehicleInfo.year) {
+            logger.warn('VIN decode incomplete - missing basic vehicle information', {
+                vin: `${cleanVin.substring(0, 8)}...`,
+                hasMake: !!vehicleInfo.make,
+                hasModel: !!vehicleInfo.model,
+                hasYear: !!vehicleInfo.year,
+                totalFields: Object.keys(vehicleInfo).length,
+                clientIP
+            });
             return res.status(400).json({
                 success: false,
                 message: 'VIN decode incomplete. Unable to determine basic vehicle information.',
                 vinData: vehicleInfo
             });
         }
+
+        const totalDuration = Date.now() - startTime;
+        logger.info('VIN lookup completed successfully', {
+            vin: `${cleanVin.substring(0, 8)}...`,
+            vehicle: `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`,
+            fieldsReturned: Object.keys(vehicleInfo).length,
+            totalDuration,
+            clientIP
+        });
 
         res.json({
             success: true,
@@ -215,9 +284,27 @@ router.post('/lookup', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('VIN lookup error:', error);
+        const totalDuration = Date.now() - startTime;
+        
+        logger.error('VIN lookup error occurred', {
+            vin: req.body.vin ? `${req.body.vin.substring(0, 8)}...` : 'undefined',
+            error: {
+                message: error.message,
+                code: error.code,
+                name: error.name,
+                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            },
+            totalDuration,
+            clientIP,
+            userAgent: req.headers['user-agent']
+        });
         
         if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+            logger.warn('VIN lookup timeout', {
+                vin: req.body.vin ? `${req.body.vin.substring(0, 8)}...` : 'undefined',
+                clientIP,
+                totalDuration
+            });
             return res.status(408).json({
                 success: false,
                 message: 'VIN lookup timed out. Please try again.'
