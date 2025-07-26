@@ -3,72 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Choose Your Method</title>
+    <title>Login - AutoHub</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #BD3432;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .method-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .method-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .sms-info {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #BD3432;
+        }
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #BD3432;
+        }
+        button {
+            background-color: #BD3432;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #8F2222;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .warning-message {
+            color: #dc3545;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8d7da;
+            border-radius: 5px;
+        }
+        .success-message {
+            color: #155724;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #d4edda;
+            border-radius: 5px;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            color: #BD3432;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Login to Your Account</h1>
-    
-    <p>Choose your preferred login method:</p>
-    
-    <h2>Login via SMS</h2>
-    <div class="sms-info">
-        <p><strong>📱 Canadian Numbers Only:</strong> We currently support Canadian phone numbers only. Numbers will be automatically formatted to +1XXXXXXXXXX format.</p>
-    </div>
-    
-    <form action="#" method="post" id="sms-login-form">
-        <label for="phone">Phone Number:</label><br>
-        <input type="tel" id="phone" name="phone" placeholder="+1234567890 or 234567890" required><br>
-        <div id="phone-warning" class="warning-message" style="display: none;"></div><br>
+    <div class="container">
+        <h1>Welcome to AutoHub</h1>
+        <p class="subtitle">Sign in to your account or create a new one - it's the same simple process!</p>
         
-        <button type="submit">Send SMS Code</button>
-    </form>
-    
-    <br>
-    
-    <div id="sms-verification" style="display: none;">
-        <h3>📱 Enter Verification Code</h3>
-        <p>We've sent a 6-digit code to your phone number. Please enter it below:</p>
-        <div id="verification-info" style="margin: 10px 0; padding: 10px; background-color: #e8f4f8; border-radius: 5px;">
-            <strong>Phone:</strong> <span id="verification-phone"></span>
+        <div class="method-section">
+            <h2>🚗 Continue with Phone Number</h2>
+            <div class="sms-info">
+                <p><strong>How it works:</strong></p>
+                <ul>
+                    <li>✓ Enter your Canadian phone number</li>
+                    <li>✓ We'll send you a verification code</li>
+                    <li>✓ If you're new, we'll create your account automatically</li>
+                    <li>✓ If you're returning, you'll be logged right in!</li>
+                </ul>
+                <p><strong>📱 Canadian Numbers Only:</strong> Currently supporting +1 (Canadian) phone numbers.</p>
+            </div>
+            
+            <form action="#" method="post" id="sms-login-form">
+                <label for="phone">Phone Number:</label><br>
+                <input type="tel" id="phone" name="phone" placeholder="+1 234 567 890 or 234 567 890" required><br>
+                <div id="phone-warning" class="warning-message" style="display: none;"></div><br>
+                
+                <button type="submit">Send Verification Code</button>
+            </form>
+            
+            <div id="sms-verification" style="display: none;">
+                <h3>📱 Enter Your Verification Code</h3>
+                <p>We've sent a 6-digit code to your phone. Enter it below to continue:</p>
+                <div id="verification-info" style="margin: 15px 0; padding: 15px; border-radius: 8px;">
+                    <strong>Phone:</strong> <span id="verification-phone"></span>
+                </div>
+                <label for="sms-code">Verification Code:</label><br>
+                <input type="text" id="sms-code" name="sms-code" placeholder="000000" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code"><br>
+                <div id="verification-warning" style="display: none; color: #dc3545; margin: 5px 0;"></div><br>
+                
+                <button type="button" id="verify-sms-btn">Verify & Continue</button>
+                <button type="button" id="resend-code-btn" style="background-color: #6c757d; margin-left: 10px;">Resend Code</button>
+                <button type="button" id="cancel-verification-btn" style="background-color: #dc3545; margin-left: 10px;">Cancel</button>
+            </div>
         </div>
-        <label for="sms-code">Verification Code:</label><br>
-        <input type="text" id="sms-code" name="sms-code" placeholder="000000" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code"><br>
-        <div id="verification-warning" style="display: none; color: #dc3545; margin: 5px 0;"></div><br>
+
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e0e0e0;">
         
-        <button type="button" id="verify-sms-btn">Verify Code</button>
-        <button type="button" id="resend-code-btn" style="background-color: #6c757d; margin-left: 10px;">Resend Code</button>
-        <button type="button" id="cancel-verification-btn" style="background-color: #dc3545; margin-left: 10px;">Cancel</button>
+        <div class="method-section">
+            <h2>🔐 Continue with Google</h2>
+            <p>Quick and secure login with your Google account:</p>
+            
+            <button type="button" id="google-login-btn">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE3LjY0IDkuMjA0NTVDMTcuNjQgOC41NjY4MiAxNy41ODY4IDcuOTUyMjcgMTcuNDg2NCA3LjM2MzY0SDE5VjEwLjg0MDlIMTYuMjk1NUMxNi4xODE4IDEyLjI2MDkgMTUuNjQwOSAxMy4zNDA5IDE0LjgxODIgMTQuMDY4MkwxNy4yOTU1IDE1LjkzMThDMTguNjU5MSAxNC42ODE4IDE5LjU2ODIgMTIuNjgxOCAxOS41NjgyIDEwLjIyNzNDMTkuNTY4MiA9LjY4MTgyIDE5LjUxMzYgOS4zODY0IDE5LjM5MDkgOS4xNTkwOUgxNy42NFoiIGZpbGw9IiM0Mjg1RjQiLz4KPC9zdmc+" alt="Google" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px;">
+                Continue with Google
+            </button>
+        </div>
+
+        <div class="method-section">
+            <h2>📱 Continue with Telegram</h2>
+            <p>Coming soon - Telegram integration is in development:</p>
+            <button type="button" id="telegram-login-btn" disabled style="opacity: 0.6;">
+                📱 Continue with Telegram (Coming Soon)
+            </button>
+        </div>
+        
+        <div class="back-link">
+            <a href="/">← Back to AutoHub Homepage</a>
+        </div>
     </div>
-    
-    <hr>
-    
-    <h2>Login via Google</h2>
-    <p>Click the button below to login with your Google account:</p>
-    
-    <button type="button" id="google-login-btn">
-        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE3LjY0IDkuMjA0NTVDMTcuNjQgOC41NjY4MiAxNy41ODY4IDcuOTUyMjcgMTcuNDg2NCA3LjM2MzY0SDE5VjEwLjg0MDlIMTYuMjk1NUMxNi4xODE4IDEyLjI2MDkgMTUuNjQwOSAxMy4zNDA5IDE0LjgxODIgMTQuMDY4MkwxNy4yOTU1IDE1LjkzMThDMTguNjU5MSAxNC42ODE4IDE5LjU2ODIgMTIuNjgxOCAxOS41NjgyIDEwLjIyNzNDMTkuNTY4MiA5LjY4MTgyIDE5LjUxMzYgOS4zODY0IDE5LjM5MDkgOS4xNTkwOUgxNy42NFoiIGZpbGw9IiM0Mjg1RjQiLz4KPC9zdmc+" alt="Google" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px;">
-        Login with Google
-    </button>
-    
-    <hr>
-    
-    <h2>Login via Telegram</h2>
-    <p>Login using your Telegram account:</p>
-    <div>
-        <p><em>🚧 Coming Soon - Telegram login integration is currently in development</em></p>
-    </div>
-    
-    <button type="button" id="telegram-login-btn" disabled>
-        📱 Login with Telegram
-    </button>
-    
-    <br>
-    
-    <p><a href="index.html">← Back to Main Page</a></p>
-    
-    <footer>
-        <p>&copy; 2025 Your Application Name</p>
-    </footer>
 
     <script src="/js/session.js"></script>
     <script src="/js/login.js"></script>

@@ -13,10 +13,10 @@
                 <h1 class="main_logo">AutoHub</h1>
                 <div class="right-section">
                 <div class="search-wrapper">
-                    <input type="text" placeholder="Search cars..." class="search-input">
-                    <button class="search-btn"><img src="img/search.svg" alt="Search"></button>
+                    <input type="text" placeholder="Search..." class="search-input">
+                    <button class="search-btn"><img src="img/search.svg" alt=""></button>
                 </div>
-                <a href="/login" class="login-button"><img src="img/login.svg" alt="Login"></a>
+                <button class="login-button"><img src="img/login.svg" alt=""></button>
                 </div>
             </div>
         </nav>
@@ -50,13 +50,27 @@
         <div class="container">
             <h3 class="text-added">Recently Added</h3>
         </div>
-        <div class="articles" id="recentAds">
-            <!-- Loading state -->
-            <div class="loading-state" style="text-align: center; padding: 40px; color: #666; width: 100%;">
-                <div style="font-size: 24px; margin-bottom: 10px;">🔄</div>
-                <p>Loading recent ads...</p>
-            </div>
-        </div>
+        <div class="articles">
+            <article>
+                <div class="article-img">
+                    <img src="img/2101 copy_large.jpg" alt="">
+                </div>
+                <div class="article-body">
+                    <h4 class="article-name">Audi RS6 Avant Perfomance Quattro</h4>
+                    <h5 class="article-price">$80,000</h5>
+                    <ul class="article-ul">
+                        <li><p>2019 y.</p></li>
+                        <li><p>80,000 km</p></li>
+                        <li><p>CVT</p></li>
+                        <li><p>FWD</p></li>
+                        <li><p>Regular 2.0 L</p></li>
+                    </ul>
+                </div>
+                <div class="article-footer">
+                    <p class="article-posted">4 days ago</p>
+                    <p class="article-location">St. John's</p>
+                </div>
+            </article>
             <article>
                 <div class="article-img">
                     <img src="img/2101 copy_large.jpg" alt="">
@@ -376,87 +390,5 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        // Check if user is logged in and update navigation
-        document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                const response = await fetch('/api/auth/session', {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (data.authenticated && data.user) {
-                    // User is logged in, replace login button with user menu
-                    const loginButton = document.querySelector('.login-button');
-                    if (loginButton) {
-                        const userName = data.user.name || data.user.phone || 'User';
-                        
-                        // Create new user menu element
-                        const userMenuContainer = document.createElement('div');
-                        userMenuContainer.className = 'user-menu-container';
-                        userMenuContainer.style.cssText = 'position: relative;';
-                        
-                        userMenuContainer.innerHTML = `
-                            <button class="user-button" style="background: transparent; border: none; color: white; font-family: 'Poppins', sans-serif; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <img src="img/login.svg" alt="User" style="width: 20px; height: 20px;">
-                                <span>${userName}</span>
-                                <span style="font-size: 12px;">▼</span>
-                            </button>
-                            <div class="dropdown-menu" style="position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-width: 200px; z-index: 1000; display: none;">
-                                <a href="/my-ads" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">🚗 My Ads</a>
-                                <a href="/dashboard" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">📊 Dashboard</a>
-                                <a href="/settings" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">⚙️ Settings</a>
-                                <a href="#" onclick="logout()" style="display: block; padding: 12px 16px; text-decoration: none; color: #BD3432;">🚪 Logout</a>
-                            </div>
-                        `;
-                        
-                        // Replace the login button with the user menu
-                        loginButton.parentNode.replaceChild(userMenuContainer, loginButton);
-                        
-                        // Add dropdown functionality
-                        const userButton = userMenuContainer.querySelector('.user-button');
-                        const dropdownMenu = userMenuContainer.querySelector('.dropdown-menu');
-                        
-                        userButton.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-                        });
-                        
-                        // Close dropdown when clicking outside
-                        document.addEventListener('click', function() {
-                            dropdownMenu.style.display = 'none';
-                        });
-                    }
-                }
-            } catch (error) {
-                console.log('User not logged in or session check failed');
-            }
-        });
-
-        // Logout function
-        async function logout() {
-            try {
-                await fetch('/api/auth/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.reload();
-            } catch (error) {
-                console.error('Logout error:', error);
-                window.location.reload();
-            }
-        }
-    </script>
-    
-    <!-- Load recent ads functionality -->
-    <script src="js/recentAds.js"></script>
 </body>
 </html>

@@ -3,73 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Ads - AutoMax</title>
+    <title>My Ads - AutoHub</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f0f0;
+            color: #000;
             line-height: 1.6;
+            padding-top: 120px; /* Account for fixed navbar */
+        }
+
+        /* Navbar Styles - matching main design */
+        .navbar {
+            background: linear-gradient(to bottom, rgba(131, 1, 1, 0.85), rgba(0, 0, 0, 0.85));
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 80px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            text-decoration: none;
+        }
+
+        .main_logo {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 40px;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 8px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .search-input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            width: 200px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .search-btn img {
+            width: 16px;
+            height: 16px;
+            filter: brightness(0) invert(1);
+        }
+
+        .login-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .login-button img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+
+        /* User menu styles */
+        .user-menu-container {
+            position: relative;
+        }
+
+        .user-button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-menu a:last-child {
+            border-bottom: none;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .page-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 40px;
+            color: #000;
+            margin: 0;
+        }
+
+        .page-header p {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color: #595959;
+            font-size: 16px;
+            margin: 5px 0 0 0;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            color: #7f8c8d;
-            font-size: 1.1em;
-        }
-
+        /* Navigation Tabs - AutoHub Style */
         .nav-tabs {
             display: flex;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            padding: 5px;
+            background-color: #fff;
+            border-radius: 8px;
             margin-bottom: 30px;
+            overflow: hidden;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .nav-tab {
             flex: 1;
-            padding: 15px 20px;
+            padding: 20px;
             text-align: center;
             background: transparent;
             border: none;
-            border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
             font-weight: 500;
-            color: #666;
+            color: #595959;
             transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab:hover {
+            background-color: #f8f8f8;
+            color: #BD3432;
         }
 
         .nav-tab.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #BD3432;
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            border-bottom: 3px solid #8F2222;
+            font-weight: 600;
         }
 
         .tab-content {
@@ -80,15 +235,17 @@
             display: block;
         }
 
+        /* Cards - AutoHub Style */
         .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
+            background: #ffffff;
+            border-radius: 8px;
             padding: 30px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
         }
 
+        /* Form Styling - AutoHub Style */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -103,24 +260,40 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            color: #2c3e50;
+            font-size: 16px;
+            color: #000;
         }
 
         .form-control {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
+            background: #fff;
+            /* Custom dropdown arrow - matching main design */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        /* Custom select arrow */
+        select.form-control {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='30,50 70,90 110,50' stroke='%23333' stroke-width='15' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 30px;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #BD3432;
+            box-shadow: 0 0 0 2px rgba(189, 52, 50, 0.2);
         }
 
         /* Smart select styles */
@@ -258,11 +431,13 @@
             display: block;
         }
 
+        /* Button Styles - AutoHub Design */
         .btn {
-            padding: 12px 30px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -272,64 +447,88 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            background-color: #000;
+            color: #fff;
+            border: 2px solid #000;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            background-color: #BD3432;
+            border-color: #BD3432;
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background: #6c757d;
-            color: white;
+            background-color: transparent;
+            color: #BD3432;
+            border: 2px solid #BD3432;
+        }
+
+        .btn-secondary:hover {
+            background-color: #BD3432;
+            color: #fff;
         }
 
         .btn-danger {
-            background: #dc3545;
+            background-color: #8F2222;
             color: white;
+            border: 2px solid #8F2222;
+        }
+
+        .btn-danger:hover {
+            background-color: #BD3432;
+            border-color: #BD3432;
         }
 
         .btn-success {
-            background: #28a745;
+            background-color: #28a745;
             color: white;
+            border: 2px solid #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #218838;
         }
 
         .btn-sm {
             padding: 8px 16px;
-            font-size: 0.9rem;
+            font-size: 14px;
         }
 
+        /* Ad Grid - AutoHub Article Style */
         .ad-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 63px;
+            margin-top: 32px;
         }
 
         .ad-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            height: auto;
+            background-color: #fff;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
         }
 
         .ad-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
 
         .ad-images {
-            margin-bottom: 15px;
+            margin-bottom: 0;
         }
 
         .ad-primary-image {
             position: relative;
             width: 100%;
-            height: 200px;
-            border-radius: 10px;
+            height: 180px;
+            border-radius: 5px 5px 0 0;
             overflow: hidden;
             background-color: #f8f9fa;
         }
@@ -339,11 +538,7 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            transition: transform 0.3s ease;
-        }
-
-        .ad-card:hover .ad-primary-image img {
-            transform: scale(1.05);
+            border-radius: 5px 5px 0 0;
         }
 
         .image-count {
@@ -353,49 +548,66 @@
             background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            border-radius: 3px;
+            font-size: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
         }
 
+        /* Ad Content - AutoHub Article Style */
         .ad-header {
-            display: flex;
-            justify-content: between;
-            align-items: flex-start;
-            margin-bottom: 15px;
+            padding: 8px;
+            padding-bottom: 0;
         }
 
         .ad-title {
-            font-size: 1.2rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #000;
             margin-bottom: 5px;
+            line-height: 1.3;
         }
 
         .ad-price {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #27ae60;
+            font-family: 'Poppins', sans-serif;
+            font-size: 25px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 10px;
         }
 
         .ad-details {
+            padding: 0 8px;
             margin-bottom: 15px;
         }
 
+        /* Article-style details list */
         .ad-detail {
+            list-style: none;
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #595959;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .ad-detail li {
+            list-style: none;
         }
 
         .ad-status {
             display: inline-block;
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
+            margin: 8px;
         }
 
         .status-active { background: #d4edda; color: #155724; }
@@ -403,21 +615,41 @@
         .status-paused { background: #fff3cd; color: #856404; }
         .status-expired { background: #e2e3e5; color: #6c757d; }
 
+        /* Ad Footer - Article Style */
         .ad-actions {
+            margin-top: auto;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-top: 1px solid #f0f0f0;
+            gap: 5px;
             flex-wrap: wrap;
         }
 
+        .ad-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color: #595959;
+            font-size: 12px;
+        }
+
+        /* Alert Styles - AutoHub Theme */
         .alert {
             padding: 15px;
             margin-bottom: 20px;
             border: 1px solid transparent;
-            border-radius: 10px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
         }
 
         .alert-danger {
-            color: #721c24;
+            color: #8F2222;
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
@@ -429,13 +661,18 @@
         }
 
         .alert-info {
-            color: #0c5460;
-            background-color: #d1ecf1;
-            border-color: #bee5eb;
+            color: #BD3432;
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
         }
 
-        /* VIN Lookup specific styles */
+        /* VIN Lookup specific styles - AutoHub Theme */
         #vinLookupStatus {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
             animation: fadeIn 0.3s ease-in;
         }
 
@@ -765,10 +1002,27 @@
     </style>
 </head>
 <body>
+    <header>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <h1 class="main_logo">AutoHub</h1>
+                </a>
+                <div class="right-section">
+                    <div class="search-wrapper">
+                        <input type="text" placeholder="Search cars..." class="search-input">
+                        <button class="search-btn"><img src="img/search.svg" alt="Search"></button>
+                    </div>
+                    <a href="/login" class="login-button"><img src="img/login.svg" alt="Login"></a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
     <div class="container">
-        <div class="header">
-            <h1>My Car Ads</h1>
-            <p>Create and manage your personal car listings on AutoMax</p>
+        <div class="page-header">
+            <h1>My Ads</h1>
+            <p>Create and manage your personal car listings</p>
         </div>
 
         <div class="nav-tabs">
@@ -1459,5 +1713,85 @@
     <script src="js/carDataProcessor.js"></script>
     <script src="js/imageUpload.js"></script>
     <script src="js/personalAds.js"></script>
+    
+    <!-- User Authentication Script -->
+    <script>
+        // Check user authentication and update navbar
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('/api/auth/check-session', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.authenticated && data.user) {
+                    // User is logged in, replace login button with user menu
+                    const loginButton = document.querySelector('.login-button');
+                    if (loginButton) {
+                        const userName = data.user.name || data.user.phone || 'User';
+                        
+                        // Create new user menu element
+                        const userMenuContainer = document.createElement('div');
+                        userMenuContainer.className = 'user-menu-container';
+                        userMenuContainer.style.cssText = 'position: relative;';
+                        
+                        userMenuContainer.innerHTML = `
+                            <button class="user-button" style="background: transparent; border: none; color: white; font-family: 'Poppins', sans-serif; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <img src="img/login.svg" alt="User" style="width: 20px; height: 20px;">
+                                <span>${userName}</span>
+                                <span style="font-size: 12px;">▼</span>
+                            </button>
+                            <div class="dropdown-menu" style="position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-width: 200px; z-index: 1000; display: none;">
+                                <a href="/my-ads" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">🚗 My Ads</a>
+                                <a href="/dashboard" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">📊 Dashboard</a>
+                                <a href="/settings" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">⚙️ Settings</a>
+                                <a href="#" onclick="logout()" style="display: block; padding: 12px 16px; text-decoration: none; color: #BD3432;">🚪 Logout</a>
+                            </div>
+                        `;
+                        
+                        // Replace the login button with the user menu
+                        loginButton.parentNode.replaceChild(userMenuContainer, loginButton);
+                        
+                        // Add dropdown functionality
+                        const userButton = userMenuContainer.querySelector('.user-button');
+                        const dropdownMenu = userMenuContainer.querySelector('.dropdown-menu');
+                        
+                        userButton.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                        });
+                        
+                        // Close dropdown when clicking outside
+                        document.addEventListener('click', function() {
+                            dropdownMenu.style.display = 'none';
+                        });
+                    }
+                }
+            } catch (error) {
+                console.log('User not logged in or session check failed');
+            }
+        });
+
+        // Logout function
+        async function logout() {
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '/';
+            }
+        }
+    </script>
 </body>
 </html>

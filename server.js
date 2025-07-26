@@ -32,8 +32,9 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "script-src": ["'self'"],
-      "style-src": ["'self'", "'unsafe-inline'"]
+      "script-src": ["'self'", "'unsafe-inline'"],
+      "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      "font-src": ["'self'", "https://fonts.gstatic.com"]
     }
   }
 }));
@@ -93,6 +94,10 @@ app.get('/admin', (req, res) => {
 
 app.get('/my-ads', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'my-ads.html'));
+});
+
+app.get('/ad/:id', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'ad-detail.html'));
 });
 
 // 404 handler

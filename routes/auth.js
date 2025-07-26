@@ -280,7 +280,7 @@ router.get('/google/callback', async (req, res) => {
     // TODO: Create or find user in database
     // TODO: Generate JWT token
     
-    res.redirect('/dashboard?token=jwt_token_here');
+    res.redirect('/?token=jwt_token_here');
   } catch (error) {
     console.error('Google OAuth error:', error);
     res.redirect('/login?error=oauth_failed');

@@ -71,7 +71,7 @@ function showVerificationSection(phone, isExisting, userInfo) {
     const infoDiv = document.getElementById('verification-info');
     if (isExisting && userInfo) {
         infoDiv.innerHTML = `
-            <strong>Welcome back!</strong><br>
+            <strong>🎉 Welcome back to AutoHub!</strong><br>
             <strong>Phone:</strong> ${phone}<br>
             ${userInfo.name ? `<strong>Name:</strong> ${userInfo.name}<br>` : ''}
             ${userInfo.email ? `<strong>Email:</strong> ${userInfo.email}<br>` : ''}
@@ -79,14 +79,16 @@ function showVerificationSection(phone, isExisting, userInfo) {
         `;
         infoDiv.style.backgroundColor = '#d4edda';
         infoDiv.style.borderColor = '#c3e6cb';
+        infoDiv.style.color = '#155724';
     } else {
         infoDiv.innerHTML = `
-            <strong>New Account</strong><br>
+            <strong>🚗 Welcome to AutoHub!</strong><br>
             <strong>Phone:</strong> ${phone}<br>
-            <em>A new account will be created for you</em>
+            <em>We'll create your AutoHub account automatically - no extra steps needed!</em>
         `;
-        infoDiv.style.backgroundColor = '#e8f4f8';
-        infoDiv.style.borderColor = '#bee5eb';
+        infoDiv.style.backgroundColor = '#e3f2fd';
+        infoDiv.style.borderColor = '#bbdefb';
+        infoDiv.style.color = '#1976d2';
     }
     
     // Show verification section and focus on code input
@@ -342,12 +344,12 @@ function verifySMS() {
             localStorage.setItem('user', JSON.stringify(data.user));
             
             if (data.isNewUser) {
-                alert('Account created successfully! Welcome to our platform. Redirecting to dashboard...');
+                alert('🎉 Welcome to AutoHub! Your account has been created successfully. Redirecting to homepage...');
             } else {
-                alert('Welcome back! Login successful. Redirecting to dashboard...');
+                alert('🚗 Welcome back to AutoHub! Login successful. Redirecting to homepage...');
             }
             
-            window.location.href = '/dashboard';
+            window.location.href = '/';
         } else {
             // Handle case where response doesn't contain token
             showVerificationWarning(data.message || 'Invalid verification code. Please try again.');
@@ -489,8 +491,8 @@ function loginWithGoogle() {
     // Here you would typically integrate with Google Sign-In API
     // For demo purposes, we'll just show an alert
     setTimeout(function() {
-        alert('Google login successful! Redirecting to dashboard...');
-        window.location.href = '/dashboard';
+        alert('🚗 Google login successful! Welcome to AutoHub. Redirecting to homepage...');
+        window.location.href = '/';
     }, 2000);
 }
 
