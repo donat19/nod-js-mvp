@@ -497,4 +497,34 @@ router.put('/profile', [
   }
 });
 
+// Refresh token endpoint
+router.post('/refresh-token', async (req, res) => {
+  try {
+    const newToken = await SessionService.forceRefreshToken(req);
+    
+    if (!newToken) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unable to refresh token. Please login again.',
+        authenticated: false
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Token refreshed successfully',
+      token: newToken,
+      authenticated: true,
+      session: SessionService.getSessionInfo(req)
+    });
+  } catch (error) {
+    console.error('Token refresh error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error refreshing token',
+      authenticated: false
+    });
+  }
+});
+
 module.exports = router;

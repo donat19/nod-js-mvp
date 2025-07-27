@@ -22,10 +22,60 @@ class SessionManager {
         };
       }
       
+      // If not authenticated, try to refresh token
+      if (!data.authenticated) {
+        console.log('Session not authenticated, attempting token refresh...');
+        const refreshResult = await this.refreshToken();
+        if (refreshResult.success) {
+          return {
+            authenticated: true,
+            user: refreshResult.user,
+            session: refreshResult.session
+          };
+        }
+      }
+      
       return { authenticated: false };
     } catch (error) {
       console.error('Session check error:', error);
       return { authenticated: false };
+    }
+  }
+
+  // Refresh JWT token
+  static async refreshToken() {
+    try {
+      const response = await fetch('/api/auth/refresh-token', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+      
+      if (data.success && data.authenticated) {
+        console.log('Token refreshed successfully');
+        return {
+          success: true,
+          user: data.session ? {
+            id: data.session.userId,
+            phone: data.session.phone,
+            email: data.session.email,
+            name: data.session.name,
+            isVerified: data.session.isVerified,
+            isAdmin: data.session.isAdmin
+          } : null,
+          session: data.session
+        };
+      }
+
+      console.log('Token refresh failed:', data.message);
+      return { success: false };
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      return { success: false };
     }
   }
 

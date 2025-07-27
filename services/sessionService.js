@@ -11,7 +11,7 @@ class SessionService {
       token = jwt.sign(
         user.toTokenPayload(),
         process.env.JWT_SECRET,
-        { expiresIn: '24h' }
+        { expiresIn: '7d' } // Увеличиваем до 7 дней
       );
     }
 
@@ -40,14 +40,43 @@ class SessionService {
     try {
       // Verify the token is still valid
       if (req.session.token) {
-        jwt.verify(req.session.token, process.env.JWT_SECRET);
+        try {
+          jwt.verify(req.session.token, process.env.JWT_SECRET);
+        } catch (tokenError) {
+          console.log('Token expired, attempting to refresh session for user:', req.session.userId);
+          
+          // Токен истек, но пользователь все еще может быть валидным
+          // Попробуем обновить токен автоматически
+          const user = await User.findById(req.session.userId);
+          
+          if (user && user.is_active) {
+            // Генерируем новый токен
+            const newToken = jwt.sign(
+              user.toTokenPayload(),
+              process.env.JWT_SECRET,
+              { expiresIn: '7d' }
+            );
+            
+            // Обновляем сессию с новым токеном
+            req.session.token = newToken;
+            req.session.lastRefresh = new Date().toISOString();
+            
+            console.log('Session refreshed successfully for user:', user.id);
+            return user;
+          } else {
+            // Пользователь не найден или неактивен
+            console.log('User not found or inactive during token refresh:', req.session.userId);
+            this.clearUserSession(req);
+            return null;
+          }
+        }
       }
 
-      // Get fresh user data from database
+      // Получаем свежие данные пользователя из базы данных
       const user = await User.findById(req.session.userId);
       
       if (!user || !user.is_active) {
-        // Clear invalid session
+        // Очищаем невалидную сессию
         this.clearUserSession(req);
         return null;
       }
@@ -55,7 +84,7 @@ class SessionService {
       return user;
     } catch (error) {
       console.error('Session validation error:', error);
-      // Clear invalid session
+      // Очищаем невалидную сессию
       this.clearUserSession(req);
       return null;
     }
@@ -77,19 +106,57 @@ class SessionService {
         }
       }
 
-      // Update session with fresh data
+      // Generate new token
+      const newToken = jwt.sign(
+        user.toTokenPayload(),
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      // Update session with fresh data and new token
       req.session.userPhone = user.phone;
       req.session.userEmail = user.email;
       req.session.userName = user.name;
       req.session.isVerified = user.is_verified;
       req.session.isActive = user.is_active;
       req.session.isAdmin = user.is_admin;
+      req.session.token = newToken;
       req.session.lastRefresh = new Date().toISOString();
 
       return true;
     } catch (error) {
       console.error('Session refresh error:', error);
       return false;
+    }
+  }
+
+  // Force refresh token for current session
+  static async forceRefreshToken(req) {
+    if (!req.session || !req.session.userId) {
+      return null;
+    }
+
+    try {
+      const user = await User.findById(req.session.userId);
+      if (!user || !user.is_active) {
+        this.clearUserSession(req);
+        return null;
+      }
+
+      // Generate new token
+      const newToken = jwt.sign(
+        user.toTokenPayload(),
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      req.session.token = newToken;
+      req.session.lastRefresh = new Date().toISOString();
+
+      return newToken;
+    } catch (error) {
+      console.error('Force token refresh error:', error);
+      return null;
     }
   }
 
