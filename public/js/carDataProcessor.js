@@ -17,17 +17,52 @@ class CarDataProcessor {
 
     async loadCarData() {
         try {
-            const response = await fetch('/api/car-data');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // First try to load from the car-options.json file
+            const response = await fetch('/data/car-options.json');
+            if (response.ok) {
+                const carOptions = await response.json();
+                console.log('Loaded car data from car-options.json');
+                return this.convertCarOptionsFormat(carOptions);
             }
-            this.carData = await response.json();
+            
+            // Fallback to API if file doesn't exist
+            const apiResponse = await fetch('/api/car-data');
+            if (!apiResponse.ok) {
+                throw new Error(`HTTP error! status: ${apiResponse.status}`);
+            }
+            this.carData = await apiResponse.json();
             this.processData();
             return this.getProcessedData();
         } catch (error) {
             console.error('Failed to load car data:', error);
             throw error;
         }
+    }
+
+    convertCarOptionsFormat(carOptions) {
+        // Convert the car-options.json format to the expected format
+        const processedData = {
+            makes: {},
+            bodyTypes: carOptions.bodyTypes || [],
+            transmissions: carOptions.transmissions || [],
+            fuelTypes: carOptions.fuelTypes || [],
+            colors: carOptions.colors || [],
+            conditions: carOptions.conditions || [],
+            canadianCities: carOptions.canadianCities || [],
+            years: Array.from({length: 30}, (_, i) => new Date().getFullYear() - i)
+        };
+
+        // Convert makes and models
+        if (carOptions.makes) {
+            Object.entries(carOptions.makes).forEach(([makeName, makeData]) => {
+                processedData.makes[makeName] = {
+                    name: makeData.name,
+                    models: makeData.models || []
+                };
+            });
+        }
+
+        return processedData;
     }
 
     processData() {

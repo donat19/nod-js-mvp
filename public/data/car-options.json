@@ -1,0 +1,301 @@
+{
+  "makes": {
+    "Acura": {
+      "name": "Acura",
+      "models": ["ILX", "TLX", "RLX", "RDX", "MDX", "NSX"]
+    },
+    "Audi": {
+      "name": "Audi", 
+      "models": ["A3", "A4", "A5", "A6", "A7", "A8", "Q3", "Q5", "Q7", "Q8", "e-tron", "R8", "TT", "RS3", "RS4", "RS5", "RS6", "RS7"]
+    },
+    "BMW": {
+      "name": "BMW",
+      "models": ["1 Series", "2 Series", "3 Series", "4 Series", "5 Series", "6 Series", "7 Series", "8 Series", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "Z4", "i3", "i4", "iX", "i8"]
+    },
+    "Buick": {
+      "name": "Buick",
+      "models": ["Encore", "Encore GX", "Envision", "Enclave"]
+    },
+    "Cadillac": {
+      "name": "Cadillac", 
+      "models": ["CT4", "CT5", "XT4", "XT5", "XT6", "Escalade", "Escalade ESV", "LYRIQ"]
+    },
+    "Chevrolet": {
+      "name": "Chevrolet",
+      "models": ["Spark", "Sonic", "Cruze", "Malibu", "Impala", "Camaro", "Corvette", "Bolt EV", "Bolt EUV", "Trax", "Equinox", "Blazer", "Traverse", "Tahoe", "Suburban", "Colorado", "Silverado 1500", "Silverado 2500HD", "Silverado 3500HD", "Express"]
+    },
+    "Chrysler": {
+      "name": "Chrysler",
+      "models": ["300", "Pacifica"]
+    },
+    "Dodge": {
+      "name": "Dodge", 
+      "models": ["Challenger", "Charger", "Durango", "Grand Caravan", "Journey"]
+    },
+    "Ford": {
+      "name": "Ford",
+      "models": ["Fiesta", "Focus", "Fusion", "Mustang", "Mustang Mach-E", "EcoSport", "Escape", "Edge", "Explorer", "Expedition", "Bronco", "Bronco Sport", "Ranger", "F-150", "F-250", "F-350", "F-450", "Transit", "Transit Connect", "E-Transit"]
+    },
+    "Genesis": {
+      "name": "Genesis",
+      "models": ["G70", "G80", "G90", "GV60", "GV70", "GV80"]
+    },
+    "GMC": {
+      "name": "GMC",
+      "models": ["Terrain", "Acadia", "Yukon", "Yukon XL", "Canyon", "Sierra 1500", "Sierra 2500HD", "Sierra 3500HD", "Savana", "Hummer EV"]
+    },
+    "Honda": {
+      "name": "Honda",
+      "models": ["Fit", "Civic", "Civic Type R", "Insight", "Accord", "CR-V", "HR-V", "Passport", "Pilot", "Ridgeline", "Odyssey"]
+    },
+    "Hyundai": {
+      "name": "Hyundai", 
+      "models": ["Accent", "Elantra", "Sonata", "Veloster", "Genesis", "Venue", "Kona", "Tucson", "Santa Fe", "Palisade", "IONIQ 5", "IONIQ 6"]
+    },
+    "Infiniti": {
+      "name": "Infiniti",
+      "models": ["Q50", "Q60", "QX50", "QX55", "QX60", "QX80"]
+    },
+    "Jaguar": {
+      "name": "Jaguar",
+      "models": ["XE", "XF", "XJ", "F-TYPE", "E-PACE", "F-PACE", "I-PACE"]
+    },
+    "Jeep": {
+      "name": "Jeep",
+      "models": ["Compass", "Cherokee", "Grand Cherokee", "Grand Cherokee L", "Wrangler", "Wrangler Unlimited", "Gladiator", "Renegade", "Grand Wagoneer", "Wagoneer"]
+    },
+    "Kia": {
+      "name": "Kia",
+      "models": ["Rio", "Forte", "Stinger", "Soul", "Seltos", "Sportage", "Sorento", "Telluride", "Sedona", "Carnival", "Niro", "EV6"]
+    },
+    "Land Rover": {
+      "name": "Land Rover",
+      "models": ["Range Rover Evoque", "Range Rover Velar", "Range Rover Sport", "Range Rover", "Discovery Sport", "Discovery", "Defender"]
+    },
+    "Lexus": {
+      "name": "Lexus",
+      "models": ["IS", "ES", "GS", "LS", "LC", "RC", "UX", "NX", "RX", "GX", "LX"]
+    },
+    "Lincoln": {
+      "name": "Lincoln", 
+      "models": ["Corsair", "Nautilus", "Aviator", "Navigator", "MKZ", "Continental"]
+    },
+    "Mazda": {
+      "name": "Mazda",
+      "models": ["Mazda3", "Mazda6", "MX-5 Miata", "CX-3", "CX-30", "CX-5", "CX-9", "MX-30"]
+    },
+    "Mercedes-Benz": {
+      "name": "Mercedes-Benz",
+      "models": ["A-Class", "C-Class", "E-Class", "S-Class", "CLA", "CLS", "G-Class", "SL", "SLC", "AMG GT", "GLA", "GLB", "GLC", "GLE", "GLS", "EQS", "EQE", "EQA", "EQB"]
+    },
+    "MINI": {
+      "name": "MINI",
+      "models": ["Cooper", "Cooper S", "Cooper SE", "Countryman", "Clubman"]
+    },
+    "Mitsubishi": {
+      "name": "Mitsubishi",
+      "models": ["Mirage", "Eclipse Cross", "Outlander", "Outlander PHEV"]
+    },
+    "Nissan": {
+      "name": "Nissan",
+      "models": ["Sentra", "Altima", "Maxima", "370Z", "GT-R", "Versa", "Kicks", "Rogue", "Murano", "Pathfinder", "Armada", "Titan", "Frontier", "NV200", "LEAF", "Ariya"]
+    },
+    "Polestar": {
+      "name": "Polestar",
+      "models": ["1", "2", "3"]
+    },
+    "Porsche": {
+      "name": "Porsche",
+      "models": ["911", "718 Boxster", "718 Cayman", "Panamera", "Cayenne", "Macan", "Taycan"]
+    },
+    "Ram": {
+      "name": "Ram",
+      "models": ["1500", "2500", "3500", "ProMaster", "ProMaster City"]
+    },
+    "Subaru": {
+      "name": "Subaru",
+      "models": ["Impreza", "Legacy", "Outback", "Forester", "Crosstrek", "Ascent", "WRX", "BRZ"]
+    },
+    "Tesla": {
+      "name": "Tesla",
+      "models": ["Model 3", "Model S", "Model X", "Model Y", "Cybertruck", "Roadster"]
+    },
+    "Toyota": {
+      "name": "Toyota",
+      "models": ["Yaris", "Corolla", "Camry", "Avalon", "Prius", "Prius Prime", "Supra", "C-HR", "RAV4", "Highlander", "4Runner", "Sequoia", "Land Cruiser", "Sienna", "Tacoma", "Tundra", "bZ4X"]
+    },
+    "Volkswagen": {
+      "name": "Volkswagen",
+      "models": ["Jetta", "Passat", "Arteon", "Golf", "Golf GTI", "Golf R", "Tiguan", "Atlas", "Atlas Cross Sport", "ID.4"]
+    },
+    "Volvo": {
+      "name": "Volvo",
+      "models": ["S60", "S90", "V60", "V90", "XC40", "XC60", "XC90", "C40 Recharge", "EX90"]
+    }
+  },
+  "bodyTypes": [
+    "Sedan",
+    "Coupe", 
+    "Convertible",
+    "Hatchback",
+    "Wagon",
+    "SUV",
+    "Crossover",
+    "Truck",
+    "Van",
+    "Minivan"
+  ],
+  "transmissions": [
+    "Manual",
+    "Automatic", 
+    "CVT",
+    "Semi-Automatic",
+    "Dual-Clutch"
+  ],
+  "fuelTypes": [
+    "Gasoline",
+    "Diesel",
+    "Hybrid",
+    "Plug-in Hybrid",
+    "Electric",
+    "Hydrogen",
+    "Flex Fuel"
+  ],
+  "conditions": [
+    {"value": "new", "label": "New"},
+    {"value": "used", "label": "Used"},
+    {"value": "certified", "label": "Certified Pre-Owned"}
+  ],
+  "colors": [
+    "White",
+    "Black", 
+    "Silver",
+    "Gray",
+    "Red",
+    "Blue",
+    "Green",
+    "Brown",
+    "Gold",
+    "Orange", 
+    "Yellow",
+    "Purple",
+    "Pink",
+    "Beige",
+    "Tan"
+  ],
+  "canadianCities": [
+    "Toronto, ON",
+    "Montreal, QC", 
+    "Vancouver, BC",
+    "Calgary, AB",
+    "Ottawa, ON",
+    "Edmonton, AB",
+    "Mississauga, ON",
+    "Winnipeg, MB",
+    "Quebec City, QC",
+    "Hamilton, ON",
+    "Brampton, ON",
+    "Surrey, BC",
+    "Laval, QC",
+    "Halifax, NS",
+    "London, ON",
+    "Markham, ON",
+    "Vaughan, ON",
+    "Gatineau, QC",
+    "Longueuil, QC",
+    "Burnaby, BC",
+    "Saskatoon, SK",
+    "Kitchener, ON",
+    "Windsor, ON",
+    "Regina, SK",
+    "Richmond, BC",
+    "Richmond Hill, ON",
+    "Oakville, ON",
+    "Burlington, ON",
+    "Sherbrooke, QC",
+    "Oshawa, ON",
+    "Saguenay, QC",
+    "Lévis, QC",
+    "Barrie, ON",
+    "Abbotsford, BC",
+    "Coquitlam, BC",
+    "Trois-Rivières, QC",
+    "St. Catharines, ON",
+    "Guelph, ON",
+    "Cambridge, ON",
+    "Whitby, ON",
+    "Kelowna, BC",
+    "Kingston, ON",
+    "Ajax, ON",
+    "Langley, BC",
+    "Saanich, BC",
+    "Milton, ON",
+    "Moncton, NB",
+    "Thunder Bay, ON",
+    "Dieppe, NB",
+    "Waterloo, ON",
+    "Delta, BC",
+    "Chatham-Kent, ON",
+    "Red Deer, AB",
+    "Kamloops, BC",
+    "Brantford, ON",
+    "Cape Breton, NS",
+    "Lethbridge, AB",
+    "Saint-Jean-sur-Richelieu, QC",
+    "Clarington, ON",
+    "Pickering, ON",
+    "Nanaimo, BC",
+    "Sudbury, ON",
+    "North Vancouver, BC",
+    "Newmarket, ON",
+    "White Rock, BC",
+    "Chilliwack, BC",
+    "Repentigny, QC",
+    "Medicine Hat, AB",
+    "St. John's, NL",
+    "Maple Ridge, BC",
+    "Drummondville, QC",
+    "Fort McMurray, AB",
+    "Saint John, NB",
+    "Moncton, NB",
+    "Granby, QC",
+    "Airdrie, AB",
+    "Fredericton, NB",
+    "Grande Prairie, AB",
+    "St. Albert, AB",
+    "Spruce Grove, AB",
+    "Charlottetown, PE",
+    "Vernon, BC",
+    "Lloydminster, AB/SK",
+    "Prince George, BC",
+    "Brandon, MB",
+    "Joliette, QC",
+    "Belleville, ON",
+    "Yorkton, SK",
+    "Cranbrook, BC",
+    "Fort St. John, BC",
+    "Rimouski, QC",
+    "Penticton, BC",
+    "Sarnia, ON",
+    "Campbell River, BC",
+    "Courtenay, BC",
+    "Cornwall, ON",
+    "Victoriaville, QC",
+    "Woodstock, ON",
+    "St. Thomas, ON",
+    "Chatham, ON",
+    "Orangeville, ON",
+    "North Bay, ON",
+    "Timmins, ON",
+    "Welland, ON",
+    "Sault Ste. Marie, ON",
+    "Niagara Falls, ON",
+    "Brockville, ON",
+    "Peterborough, ON",
+    "Pembroke, ON",
+    "Dryden, ON",
+    "Elliot Lake, ON",
+    "Temiskaming Shores, ON",
+    "Kenora, ON"
+  ]
+}

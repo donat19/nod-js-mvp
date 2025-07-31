@@ -104,3 +104,6 @@ Thumbs.db
 # Log files (Winston logs)
 logs/
 *.log
+
+# User uploaded files
+public/uploads/

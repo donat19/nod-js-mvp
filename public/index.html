@@ -28,23 +28,187 @@
             <p class="header-time">4 days ago</p>
             <p class="header-name">Audi RS6 Avant Perfomance Quattro</p>
         </div>
-            <div class="div-filters">
-            <div class="filter-item">
-                <label for="province">Province</label>
-                <select id="province" class="province"></select>
+        
+        <!-- Advanced Filter System -->
+        <div class="filter-system">
+            <div class="filter-header">
+                <h3>Find Your Perfect Car</h3>
+                <button id="toggleFilters" class="toggle-filters-btn">
+                    <span id="filterToggleText">Advanced Filters</span>
+                    <span id="filterToggleIcon">▼</span>
+                </button>
             </div>
-
-            <div class="filter-item">
-                <label for="make">Make</label>
-                <select id="make" class="make"></select>
+            
+            <!-- Basic Filters (Always Visible) -->
+            <div class="basic-filters">
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label for="searchInput">Search</label>
+                        <input type="text" id="searchInput" placeholder="Search by make, model, or title...">
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="makeFilter">Make</label>
+                        <select id="makeFilter">
+                            <option value="">All Makes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="modelFilter">Model</label>
+                        <select id="modelFilter">
+                            <option value="">All Models</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="locationFilter">Location</label>
+                        <select id="locationFilter">
+                            <option value="">All Locations</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-
-            <div class="filter-item">
-                <label for="model">Model</label>
-                <select id="model" class="model"></select>
+            
+            <!-- Advanced Filters (Collapsible) -->
+            <div class="advanced-filters" id="advancedFilters" style="display: none;">
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label for="priceMin">Min Price</label>
+                        <input type="number" id="priceMin" placeholder="0" min="0">
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="priceMax">Max Price</label>
+                        <input type="number" id="priceMax" placeholder="No limit" min="0">
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="yearMin">Min Year</label>
+                        <select id="yearMin">
+                            <option value="">Any Year</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="yearMax">Max Year</label>
+                        <select id="yearMax">
+                            <option value="">Any Year</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label for="mileageMax">Max Mileage</label>
+                        <select id="mileageMax">
+                            <option value="">Any Mileage</option>
+                            <option value="25000">Under 25,000 mi</option>
+                            <option value="50000">Under 50,000 mi</option>
+                            <option value="75000">Under 75,000 mi</option>
+                            <option value="100000">Under 100,000 mi</option>
+                            <option value="150000">Under 150,000 mi</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="transmissionFilter">Transmission</label>
+                        <select id="transmissionFilter">
+                            <option value="">Any Transmission</option>
+                            <option value="automatic">Automatic</option>
+                            <option value="manual">Manual</option>
+                            <option value="cvt">CVT</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="fuelTypeFilter">Fuel Type</label>
+                        <select id="fuelTypeFilter">
+                            <option value="">Any Fuel Type</option>
+                            <option value="gasoline">Gasoline</option>
+                            <option value="diesel">Diesel</option>
+                            <option value="hybrid">Hybrid</option>
+                            <option value="electric">Electric</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="bodyTypeFilter">Body Type</label>
+                        <select id="bodyTypeFilter">
+                            <option value="">Any Body Type</option>
+                            <option value="sedan">Sedan</option>
+                            <option value="suv">SUV</option>
+                            <option value="hatchback">Hatchback</option>
+                            <option value="coupe">Coupe</option>
+                            <option value="wagon">Wagon</option>
+                            <option value="convertible">Convertible</option>
+                            <option value="pickup">Pickup Truck</option>
+                            <option value="van">Van</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label for="conditionFilter">Condition</label>
+                        <select id="conditionFilter">
+                            <option value="">Any Condition</option>
+                            <option value="new">New</option>
+                            <option value="like-new">Like New</option>
+                            <option value="excellent">Excellent</option>
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="colorFilter">Color</label>
+                        <select id="colorFilter">
+                            <option value="">Any Color</option>
+                            <option value="white">White</option>
+                            <option value="black">Black</option>
+                            <option value="silver">Silver</option>
+                            <option value="gray">Gray</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="brown">Brown</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="orange">Orange</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="sortBy">Sort By</label>
+                        <select id="sortBy">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="mileage-low">Mileage: Low to High</option>
+                            <option value="year-new">Year: Newest First</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="showOnly">Show Only</label>
+                        <select id="showOnly">
+                            <option value="">All Listings</option>
+                            <option value="with-images">With Images</option>
+                            <option value="verified">Verified Sellers</option>
+                            <option value="recent">Posted This Week</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-
-            <button class="more-btn">More</button>
+            
+            <!-- Filter Actions -->
+            <div class="filter-actions">
+                <button id="applyFilters" class="apply-filters-btn">Apply Filters</button>
+                <button id="clearFilters" class="clear-filters-btn">Clear All</button>
+                <span id="resultsCount" class="results-count">Loading...</span>
+            </div>
         </div>
         <h2 class="text-main"><span>AutoHub</span> - Buy. Sell. Drive.</h2>
         <div class="container">
@@ -197,6 +361,7 @@
                             </button>
                             <div class="dropdown-menu" style="position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-width: 200px; z-index: 1000; display: none;">
                                 <a href="/my-ads" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">🚗 My Ads</a>
+                                <a href="/chats" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">💬 Chats</a>
                                 <a href="/dashboard" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">📊 Dashboard</a>
                                 <a href="/settings" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">⚙️ Settings</a>
                                 <a href="#" onclick="logout()" style="display: block; padding: 12px 16px; text-decoration: none; color: #BD3432;">🚪 Logout</a>
@@ -242,6 +407,9 @@
             }
         }
     </script>
+    
+    <!-- Load advanced filter system -->
+    <script src="js/advancedFilters.js"></script>
     
     <!-- Load recent ads functionality -->
     <script src="js/recentAds.js"></script>

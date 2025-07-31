@@ -20,6 +20,8 @@ const adminRoutes = require('./routes/admin');
 const personalAdsRoutes = require('./routes/personalAds');
 const imageRoutes = require('./routes/images');
 const vinLookupRoutes = require('./routes/vinLookup');
+const chatRoutes = require('./routes/chats');
+const chatEnhancementsRoutes = require('./routes/chatEnhancements');
 
 // Rate limiting
 const limiter = rateLimit({
@@ -74,6 +76,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/personal-ads', personalAdsRoutes);
 app.use('/api/images', imageRoutes);
 app.use('/api/vin', vinLookupRoutes);
+app.use('/api/chats', chatRoutes);
+app.use('/api/chats', chatEnhancementsRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {
@@ -94,6 +98,10 @@ app.get('/admin', (req, res) => {
 
 app.get('/my-ads', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'my-ads.html'));
+});
+
+app.get('/chats', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'chats.html'));
 });
 
 app.get('/ad/:id', (req, res) => {
@@ -143,7 +151,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, async () => {
+const http = require('http');
+const ChatWebSocketServer = require('./services/chatWebSocketService');
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize WebSocket server
+const chatWS = new ChatWebSocketServer(server);
+app.chatWebSocket = chatWS; // Make it available to routes
+
+server.listen(PORT, async () => {
   logger.info('Server starting up', {
     port: PORT,
     environment: process.env.NODE_ENV || 'development',
@@ -151,6 +169,7 @@ app.listen(PORT, async () => {
   });
   
   console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`WebSocket chat server available at ws://localhost:${PORT}/ws/chat`);
   
   // Test database connection on startup
   const dbConnected = await testConnection();
@@ -165,6 +184,7 @@ app.listen(PORT, async () => {
   logger.info('Server startup completed', {
     port: PORT,
     databaseConnected: dbConnected,
+    webSocketEnabled: true,
     timestamp: new Date().toISOString()
   });
 });
