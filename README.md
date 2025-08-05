@@ -64,6 +64,9 @@ AutoMax is a modern car dealership platform featuring secure authentication, per
 - ✅ Secure session management with HTTPOnly cookies
 - ✅ Rate limiting and security middleware
 - ✅ Admin role-based access control
+- ✅ **Secure admin access with terminal-generated time-limited tokens**
+- ✅ **Cryptographic admin authentication with one-time use codes**
+- ✅ **Complete security audit logging and session management**
 
 ### 👥 User Management
 - ✅ Phone number-based registration
@@ -224,6 +227,14 @@ npm run db:rollback
 - `PUT /api/admin/users/:id/status` - Update user status
 - `GET /api/admin/stats` - Get system statistics
 - `POST /api/admin/sms/send` - Send admin SMS messages
+
+### Secure Admin Access System
+- `GET /admin-secure-access` - Validate admin access token and code
+- `POST /api/admin-security/authenticate` - Complete admin authentication
+- `GET /api/admin-security/status` - Check admin session status
+- `POST /api/admin-security/logout` - Logout admin session
+- `GET /api/admin-security/activity` - Get admin activity log
+- `GET /api/admin-security/overview` - Get security overview
 
 ### WebSocket Events
 - **Connection**: `ws://localhost:3000/ws/chat`
@@ -525,6 +536,33 @@ app.get('/dashboard', SessionService.requireAuth, (req, res) => {
 });
 ```
 
+### Secure Admin Access System:
+```javascript
+// Generate secure admin access token (from terminal)
+// Command: node scripts/generate-admin-access.js [duration]
+
+// DIRECT ACCESS - Click generated URL for immediate admin panel access
+// URL: http://localhost:3000/admin-secure-access?token=TOKEN&code=CODE
+// This automatically creates an admin session and redirects to admin panel
+
+// Check admin session status programmatically
+const status = await fetch('/api/admin-security/status');
+
+// View admin activity log
+const activity = await fetch('/api/admin-security/activity?limit=50');
+
+// Manual session management (optional)
+const response = await fetch('/api/admin-security/authenticate', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    token: adminToken,
+    code: adminCode,
+    userId: adminUserId
+  })
+});
+```
+
 ## Twilio SMS Setup
 
 This project uses the official [Twilio Node.js SDK](https://github.com/twilio/twilio-node) with Twilio Verify Service for secure SMS authentication.
@@ -682,6 +720,9 @@ npm test  # (to be implemented)
 - [x] Complete car inventory database structure
 - [x] User authentication and profile management
 - [x] Admin panel and role-based access
+- [x] **Secure admin access system with terminal-generated tokens**
+- [x] **Time-limited admin authentication with cryptographic security**
+- [x] **Complete admin activity logging and session management**
 - [x] AutoMax car sales UI/UX design
 - [x] PostgreSQL with comprehensive migrations
 - [x] API endpoints for car management (ready for frontend)

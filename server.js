@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const adminRoutes = require('./routes/admin');
+const adminSecurityRoutes = require('./routes/adminSecurity');
 const personalAdsRoutes = require('./routes/personalAds');
 const imageRoutes = require('./routes/images');
 const vinLookupRoutes = require('./routes/vinLookup');
@@ -77,6 +78,7 @@ app.get('/api/car-data', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/', adminSecurityRoutes.router);
 app.use('/api/personal-ads', personalAdsRoutes);
 app.use('/api/images', imageRoutes);
 app.use('/api/vin', vinLookupRoutes);
@@ -96,8 +98,94 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+app.get('/admin', async (req, res) => {
+  try {
+    // Check for admin session
+    const sessionToken = req.cookies.admin_session;
+    
+    if (!sessionToken) {
+      // No admin session, redirect to generate access token
+      return res.status(401).send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Admin Access Required</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; text-align: center; background: #f8f9fa; }
+            .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .error-code { font-size: 72px; color: #dc3545; margin-bottom: 20px; }
+            h1 { color: #343a40; margin-bottom: 20px; }
+            p { color: #6c757d; margin-bottom: 30px; line-height: 1.6; }
+            .command { background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; margin: 20px 0; }
+            .btn { display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="error-code">🔐</div>
+            <h1>Admin Access Required</h1>
+            <p>You need a valid admin session to access this panel. Please generate a secure access token from the server terminal.</p>
+            <div class="command">
+              <strong>Terminal Command:</strong><br>
+              node scripts/generate-admin-access.js
+            </div>
+            <p>Or use the batch script:</p>
+            <div class="command">
+              scripts\\admin-access.bat generate
+            </div>
+            <a href="/" class="btn">Return to Home</a>
+          </div>
+        </body>
+        </html>
+      `);
+    }
+
+    // Validate admin session
+    const { AdminSecurityService } = require('./routes/adminSecurity');
+    const adminSecurity = new AdminSecurityService();
+    const session = await adminSecurity.validateAdminSession(sessionToken);
+    
+    if (!session.valid) {
+      // Invalid session, clear cookie and show access required
+      res.clearCookie('admin_session');
+      return res.status(401).send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Session Expired</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; text-align: center; background: #f8f9fa; }
+            .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .error-code { font-size: 72px; color: #ffc107; margin-bottom: 20px; }
+            h1 { color: #343a40; margin-bottom: 20px; }
+            p { color: #6c757d; margin-bottom: 30px; line-height: 1.6; }
+            .command { background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; margin: 20px 0; }
+            .btn { display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="error-code">⏰</div>
+            <h1>Admin Session Expired</h1>
+            <p>Your admin session has expired or is invalid. Please generate a new access token from the server terminal.</p>
+            <div class="command">
+              <strong>Generate New Token:</strong><br>
+              node scripts/generate-admin-access.js
+            </div>
+            <a href="/" class="btn">Return to Home</a>
+          </div>
+        </body>
+        </html>
+      `);
+    }
+
+    // Valid session, serve admin panel
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    
+  } catch (error) {
+    console.error('Error checking admin session:', error);
+    res.status(500).send('Internal server error');
+  }
 });
 
 app.get('/my-ads', (req, res) => {
