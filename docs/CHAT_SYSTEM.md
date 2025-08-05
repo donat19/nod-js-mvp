@@ -1,28 +1,31 @@
-# AutoHub Real-Time Chat System
+# AutoMax Real-Time Chat System
 
 ## Overview
 
-This comprehensive chat system provides real-time messaging capabilities for the AutoHub car marketplace, enabling buyers and sellers to communicate seamlessly about car listings.
+This comprehensive chat system provides real-time messaging capabilities for the AutoMax car marketplace, enabling buyers and sellers to communicate seamlessly about car listings and personal ads.
 
 ## Features
 
 ### Core Chat Features
-- **Real-time messaging** with WebSocket integration
-- **Conversation management** between buyers and sellers
-- **Message read status** tracking
-- **Typing indicators** for live feedback
-- **File attachments** with image optimization
-- **Message reactions** (emojis)
-- **Full-text search** across message history
-- **Conversation settings** (mute, notifications, custom names)
+- ✅ **Real-time messaging** with WebSocket integration
+- ✅ **Conversation management** between buyers and sellers
+- ✅ **Message read status** tracking with real-time updates
+- ✅ **Typing indicators** for live feedback with auto-cleanup
+- ✅ **File attachments** with automatic image optimization (WebP conversion)
+- ✅ **Message reactions** (emoji support) with real-time broadcasting
+- ✅ **Full-text search** across message history with PostgreSQL tsvector
+- ✅ **Conversation settings** (mute, pin, notifications, custom names)
 
 ### Advanced Features
-- **Message templates** for quick replies
-- **Analytics tracking** for usage insights
-- **Message threading** for organized discussions
-- **Scheduled messages** for future delivery
-- **Delivery status tracking** (sent, delivered, read)
-- **Auto-cleanup** of typing indicators and inactive connections
+- ✅ **Message templates** for quick replies with usage tracking
+- ✅ **Analytics tracking** for conversation insights and user engagement
+- ✅ **Message threading** for organized discussions (structure ready)
+- ✅ **Scheduled messages** for future delivery
+- ✅ **Delivery status tracking** (sent, delivered, read)
+- ✅ **Auto-cleanup** of typing indicators and inactive WebSocket connections
+- ✅ **Message editing** with edit history tracking
+- ✅ **Conversation participants** management with role support
+- ✅ **Real-time user presence** and connection status
 
 ## Architecture
 
@@ -189,17 +192,24 @@ node server.js
 ### 4. Access Chat Interface
 ```
 http://localhost:3000/chats.html
+WebSocket endpoint: ws://localhost:3000/ws/chat
 ```
 
 ## Configuration
 
 ### Environment Variables
-```
+```env
+# Database Configuration
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=autohub
+DB_NAME=nodejs_mvp
 DB_USER=your_user
 DB_PASSWORD=your_password
+
+# Chat-specific settings
+WEBSOCKET_PORT=3000
+CHAT_FILE_MAX_SIZE=10485760  # 10MB
+CHAT_CLEANUP_INTERVAL=60000   # 1 minute
 ```
 
 ### File Upload Settings
@@ -355,7 +365,7 @@ WHERE table_schema = 'public' AND table_name LIKE '%chat%';
 
 ## Support
 
-For technical support or feature requests, please refer to the main AutoHub documentation or contact the development team.
+For technical support or feature requests, please refer to the main AutoMax documentation or contact the development team.
 
 ---
 
@@ -365,5 +375,7 @@ For technical support or feature requests, please refer to the main AutoHub docu
 - **v1.1** - WebSocket integration
 - **v2.0** - Advanced features (attachments, reactions, templates)
 - **v2.1** - Performance optimizations and analytics
+- **v2.2** - Full-text search and conversation management
+- **v3.0** - Complete feature set with real-time enhancements
 
-*Last updated: January 2025*
+*Last updated: August 2025*

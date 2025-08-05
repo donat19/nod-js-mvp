@@ -8,12 +8,26 @@ AutoMax is a comprehensive Node.js car sales platform with SMS authentication, s
 - [Main README](../README.md) - Project overview and quick start guide
 - [PostgreSQL Setup](POSTGRESQL.md) - Database installation and configuration
 - [Environment Configuration](../README.md#environment-variables) - Required environment variables
+- [Chat System Guide](CHAT_SYSTEM.md) - Complete real-time chat documentation
+- [Logging Configuration](LOGGING.md) - Winston logging setup and monitoring
+- [Deployment Guide](DEPLOYMENT.md) - Production deployment and server setup
 
 ### 🔧 Technical Documentation  
-- [Database Schema](../README.md#database-schema) - Complete database structure
-- [API Endpoints](../README.md#api-endpoints) - All available REST API routes
+- [Database Schema](../README.md#database-schema) - Complete database structure (15+ tables)
+- [API Reference](API_REFERENCE.md) - Comprehensive API documentation with examples
+- [API Endpoints](../README.md#api-endpoints) - Quick reference for all REST API routes
+- [WebSocket Documentation](API_REFERENCE.md#websocket-events) - Real-time event documentation
 - [Authentication System](../README.md#authentication--security) - SMS, JWT, and session management
-- [Car Management](../README.md#vehicle-platform-database-ready) - Vehicle inventory system
+- [Personal Ads System](../README.md#personal-ads-system) - Personal advertisement management
+- [Real-Time Chat System](CHAT_SYSTEM.md) - WebSocket messaging with advanced features
+- [Chat Enhancement Features](CHAT_SYSTEM.md#advanced-features) - Reactions, templates, analytics
+
+### 🚀 Production & Deployment
+- [Deployment Guide](DEPLOYMENT.md) - Complete production deployment guide
+- [Security Configuration](DEPLOYMENT.md#security-configuration) - Production security setup
+- [Performance Optimization](DEPLOYMENT.md#performance-optimization) - Scaling and optimization
+- [Monitoring & Logging](DEPLOYMENT.md#monitoring-and-logging) - Production monitoring
+- [Backup & Recovery](DEPLOYMENT.md#disaster-recovery) - Disaster recovery procedures
 
 ### 🏗️ Architecture Overview
 
@@ -51,17 +65,24 @@ AutoMax follows a modular Node.js architecture:
 #### ✅ Implemented:
 - **Authentication**: SMS verification with anti-collision protection
 - **Sessions**: Cookie-based persistence with JWT fallback  
-- **Database**: Complete car inventory schema with PostgreSQL
+- **Database**: Complete schema with 15+ tables (PostgreSQL)
 - **API**: RESTful endpoints for all major functionality
 - **UI**: AutoMax-themed car sales interface
 - **Admin**: Role-based access control and management
+- **Personal Ads**: Complete CRUD operations with advanced search
+- **Real-Time Chat**: WebSocket messaging with advanced features
+- **File Processing**: Image optimization and attachment handling
+- **Analytics**: Chat usage tracking and conversation insights
+- **Search**: Full-text search across messages and ads
+- **Logging**: Comprehensive Winston-based logging system
 
 #### 🔄 In Development:
+- Personal ads frontend implementation
 - Car inventory frontend implementation
 - Advanced search and filtering UI
-- Lead management system
-- Image upload and management
-- ✅ Soft delete functionality
+- Image upload management interface
+- Admin dashboard enhancements
+- Mobile-responsive chat interface
 
 ### 🚀 Development Workflow
 
@@ -112,9 +133,18 @@ node scripts/test-sessions.js
 - **users** - Authentication and profile data
 - **verification_codes** - SMS verification with expiration
 - **user_sessions** - JWT token management
-- **cars** - Complete vehicle inventory
-- **car_inquiries** - Customer lead tracking  
-- **saved_cars** - User favorites and watchlists
+- **personal_ads** - Personal advertisement listings
+- **cars** - Complete vehicle inventory (ready for dealership use)
+- **conversations** - Real-time chat conversations
+- **messages** - Chat messages with rich content support
+- **message_attachments** - File uploads with optimization
+- **message_reactions** - Emoji reactions and engagement
+- **message_templates** - Quick reply templates
+- **conversation_settings** - User preferences per conversation
+- **chat_analytics** - Usage tracking and insights
+- **typing_indicators** - Real-time typing status
+- **scheduled_messages** - Future message delivery
+- **message_search_index** - Full-text search optimization
 
 #### Advanced Features:
 - **UUID Primary Keys** - Secure, non-sequential identifiers

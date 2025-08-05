@@ -82,15 +82,40 @@ AutoMax is a modern car dealership platform featuring secure authentication, per
 - ✅ Image and feature storage (JSON)
 - ✅ VIN tracking and dealer notes
 
-### 🛠 Technical Infrastructure
+### � Real-Time Chat System
+- ✅ **WebSocket-based real-time messaging**
+- ✅ **Conversation management between buyers and sellers**
+- ✅ **File attachments with automatic image optimization**
+- ✅ **Message reactions (emoji support)**
+- ✅ **Typing indicators with auto-cleanup**
+- ✅ **Message read status tracking**
+- ✅ **Full-text search across message history**
+- ✅ **Conversation settings (mute, pin, custom names)**
+- ✅ **Message templates for quick replies**
+- ✅ **Chat analytics and usage tracking**
+- ✅ **Scheduled messages for future delivery**
+- ✅ **Message threading and delivery status**
+
+### 📱 Personal Ads System
+- ✅ **Complete personal ads CRUD operations**
+- ✅ **Ad creation, editing, and management**
+- ✅ **Advanced search and filtering**
+- ✅ **Image upload and optimization**
+- ✅ **Location-based filtering**
+- ✅ **Ad status management (active, sold, expired)**
+
+### �🛠 Technical Infrastructure
 - ✅ PostgreSQL with connection pooling
-- ✅ Comprehensive database migrations
+- ✅ Comprehensive database migrations (15+ tables)
 - ✅ Modular Express.js architecture
-- ✅ Error handling and logging
-- ✅ API-ready vehicle management endpoints
+- ✅ Error handling and logging with Winston
+- ✅ API-ready endpoints for all major functionality
 - ✅ Performance-optimized database indexes
 - ✅ JSONB support for flexible data storage
 - ✅ Soft delete functionality
+- ✅ **WebSocket server with connection management**
+- ✅ **Real-time event broadcasting**
+- ✅ **File upload processing with Sharp**
 
 ## Quick Start
 
@@ -150,6 +175,40 @@ npm run db:rollback
 - `POST /api/auth/logout` - Logout user
 - `GET /api/auth/verify` - Verify JWT token
 
+### User Management
+- `GET /api/users/profile` - Get current user profile
+- `PUT /api/users/profile` - Update user profile
+- `GET /api/users/stats` - Get user statistics
+
+### Personal Ads
+- `GET /api/personal-ads` - List personal ads with filtering
+- `POST /api/personal-ads` - Create new personal ad
+- `GET /api/personal-ads/:id` - Get personal ad details
+- `PUT /api/personal-ads/:id` - Update personal ad
+- `DELETE /api/personal-ads/:id` - Delete personal ad
+- `POST /api/personal-ads/:id/contact` - Contact ad owner
+
+### Real-Time Chat System
+- `GET /api/chats/conversations` - Get user's conversations
+- `POST /api/chats/conversations` - Create new conversation
+- `GET /api/chats/:conversationId/messages` - Get conversation messages
+- `POST /api/chats/:conversationId/messages` - Send new message
+- `PUT /api/chats/:conversationId/messages/:messageId` - Edit message
+- `DELETE /api/chats/:conversationId/messages/:messageId` - Delete message
+- `POST /api/chats/:conversationId/read` - Mark messages as read
+
+### Advanced Chat Features
+- `POST /api/chats/enhanced/attachments` - Upload file attachments
+- `GET /api/chats/enhanced/attachments/:id` - Get attachment details
+- `POST /api/chats/enhanced/reactions` - Add message reaction
+- `DELETE /api/chats/enhanced/reactions/:id` - Remove reaction
+- `GET /api/chats/enhanced/reactions/:messageId` - Get message reactions
+- `POST /api/chats/enhanced/typing` - Update typing status
+- `GET /api/chats/enhanced/templates` - Get message templates
+- `POST /api/chats/enhanced/templates` - Create message template
+- `GET /api/chats/enhanced/search` - Search messages
+- `POST /api/chats/enhanced/settings` - Update conversation settings
+
 ### Car Management (Ready for Implementation)
 - `GET /api/cars` - List cars with filtering/search
 - `POST /api/cars` - Create new car listing (admin)
@@ -159,6 +218,17 @@ npm run db:rollback
 - `POST /api/cars/:id/inquire` - Submit car inquiry
 - `POST /api/cars/:id/save` - Save car to favorites
 - `DELETE /api/cars/:id/save` - Remove from favorites
+
+### Admin Panel
+- `GET /api/admin/users` - Get all users (admin only)
+- `PUT /api/admin/users/:id/status` - Update user status
+- `GET /api/admin/stats` - Get system statistics
+- `POST /api/admin/sms/send` - Send admin SMS messages
+
+### WebSocket Events
+- **Connection**: `ws://localhost:3000/ws/chat`
+- **Events**: authenticate, join_conversation, typing_start/stop, message_sent, message_read
+- **Real-time**: Message delivery, typing indicators, reactions, user presence
 
 ### Session Management
 - `GET /api/auth/session` - Get current session info
@@ -200,33 +270,75 @@ SESSION_SECRET=your_session_secret
 
 ## Database Schema
 
-### Tables:
+### Current Tables:
+
+#### Core Authentication & Users
 - **users** - User accounts with authentication data
 - **verification_codes** - SMS verification codes  
 - **user_sessions** - JWT token management
+
+#### Personal Ads System
+- **personal_ads** - Personal ad listings with full specifications
 - **cars** - Vehicle inventory with full specifications
 - **car_inquiries** - Customer inquiries and lead tracking
 - **saved_cars** - User favorite vehicles
+
+#### Real-Time Chat System
+- **conversations** - Chat conversations between users
+- **messages** - Individual chat messages
+- **message_read_status** - Message read tracking
+- **conversation_participants** - Conversation participant management
+
+#### Advanced Chat Features
+- **message_attachments** - File attachments with optimization
+- **message_reactions** - Emoji reactions to messages
+- **typing_indicators** - Real-time typing status
+- **conversation_settings** - User preferences per conversation
+- **message_templates** - Quick reply templates
+- **chat_analytics** - Usage analytics and insights
+- **message_search_index** - Full-text search optimization
+- **message_threads** - Threaded conversations
+- **message_delivery_status** - Delivery tracking
+- **scheduled_messages** - Future message scheduling
+- **chat_rooms** - Room-based conversations (future)
+
+#### System Tables
 - **migrations** - Migration tracking
 
 ### Key Features:
-- UUID primary keys
-- Soft delete functionality  
-- Automatic timestamps
-- Proper indexing and foreign key constraints
-- JSONB storage for features and metadata
-- Advanced search indexes for vehicle filtering
+- **UUID primary keys** - Secure, non-sequential identifiers
+- **Soft delete functionality** - Data preservation with deleted_at timestamps
+- **Automatic timestamps** - created_at, updated_at tracking
+- **Proper indexing and foreign key constraints** - Performance and data integrity
+- **JSONB storage** - Flexible metadata and feature storage
+- **Full-text search indexes** - Optimized message and content search
+- **Advanced search indexes** - Vehicle and personal ad filtering
+- **WebSocket integration** - Real-time message delivery
+- **File processing** - Automatic image optimization and storage
 
-### Car Database Structure:
+### Personal Ads Database Structure:
 ```sql
-cars table includes:
-- Basic info: make, model, year, mileage, price
-- Technical: VIN, engine, transmission, drivetrain  
-- Features: JSON storage for flexible attributes
-- Media: JSON array for image URLs
-- Dealer: notes, featured status, availability
-- Location: city, state for geographic search
+personal_ads table includes:
+- Basic info: title, description, category, condition
+- Pricing: price, price_type, negotiable
+- Vehicle: make, model, year, mileage (if applicable)
+- Location: city, state, postal_code
+- Contact: contact_method, phone, email
+- Media: images (JSON array), features (JSON)
+- Status: status, featured, views, created_by
 - Timestamps: created_at, updated_at, deleted_at
+```
+
+### Chat System Database Structure:
+```sql
+Comprehensive chat system with:
+- Real-time messaging with WebSocket support
+- File attachments with automatic optimization
+- Message reactions and typing indicators
+- Full-text search with PostgreSQL tsvector
+- Analytics tracking and conversation insights
+- Advanced settings and customization options
+- Message scheduling and delivery tracking
 ```
 
 ## Usage Examples
@@ -246,6 +358,84 @@ const user = await User.create({
 const user = await User.findByPhone('+1234567890');
 user.name = 'John Smith';
 await user.save();
+```
+
+### Personal Ads Management:
+```javascript
+const PersonalAd = require('./models/PersonalAd');
+
+// Create new personal ad
+const ad = await PersonalAd.create({
+  title: '2019 Honda Civic for Sale',
+  description: 'Excellent condition, low mileage',
+  category: 'vehicles',
+  subcategory: 'cars',
+  price: 18500,
+  make: 'Honda',
+  model: 'Civic',
+  year: 2019,
+  mileage: 25000,
+  city: 'Toronto',
+  state: 'ON',
+  created_by: userId
+});
+
+// Search ads with filters
+const ads = await PersonalAd.search({
+  category: 'vehicles',
+  make: 'Honda',
+  minPrice: 15000,
+  maxPrice: 25000,
+  city: 'Toronto'
+});
+```
+
+### Real-Time Chat System:
+```javascript
+const Conversation = require('./models/Conversation');
+const Message = require('./models/Message');
+
+// Create conversation between buyer and seller
+const conversation = await Conversation.create({
+  ad_id: adId,
+  buyer_id: buyerId,
+  seller_id: sellerId
+});
+
+// Send message with WebSocket notification
+const message = await Message.create({
+  conversation_id: conversationId,
+  sender_id: userId,
+  message_text: 'Is this item still available?',
+  message_type: 'text'
+});
+
+// WebSocket will automatically notify participants
+```
+
+### Advanced Chat Features:
+```javascript
+const { MessageReaction, MessageTemplate, ConversationSettings } = require('./models/ChatEnhancements');
+
+// Add emoji reaction to message
+await MessageReaction.addReaction(messageId, userId, 'like', '👍');
+
+// Use message template
+const template = await MessageTemplate.findByUser(userId, 'greeting');
+const message = await Message.create({
+  conversation_id: conversationId,
+  sender_id: userId,
+  message_text: template.template_text,
+  message_type: 'text'
+});
+
+// Update conversation settings
+await ConversationSettings.createOrUpdate({
+  conversation_id: conversationId,
+  user_id: userId,
+  is_muted: true,
+  custom_name: 'Honda Civic Discussion'
+});
 ```
 
 ### Car Inventory Management:
@@ -271,6 +461,38 @@ const cars = await Car.search({
   maxPrice: 35000,
   condition: 'excellent'
 });
+```
+
+### WebSocket Chat Integration:
+```javascript
+// Initialize WebSocket connection
+const ws = new WebSocket('ws://localhost:3000/ws/chat');
+
+// Authenticate user
+ws.send(JSON.stringify({
+  type: 'authenticate',
+  data: { userId: userId, sessionId: sessionId }
+}));
+
+// Join conversation
+ws.send(JSON.stringify({
+  type: 'join_conversation',
+  data: { conversationId: conversationId }
+}));
+
+// Listen for real-time messages
+ws.onmessage = (event) => {
+  const message = JSON.parse(event.data);
+  if (message.type === 'new_message') {
+    displayMessage(message.message);
+  }
+};
+
+// Send typing indicator
+ws.send(JSON.stringify({
+  type: 'typing_start',
+  data: {}
+}));
 ```
 
 ### SMS Verification with Collision Protection:
@@ -421,7 +643,11 @@ The test scripts will verify your Twilio configuration and test the collision de
 ## Documentation
 
 - 📖 [PostgreSQL Setup Guide](docs/POSTGRESQL.md) - Comprehensive database documentation
-- 🔧 Installation, configuration, and troubleshooting
+- � [Chat System Documentation](docs/CHAT_SYSTEM.md) - Complete real-time chat guide
+- 📝 [API Reference](docs/API_REFERENCE.md) - Comprehensive API documentation
+- 🚀 [Deployment Guide](docs/DEPLOYMENT.md) - Production deployment instructions
+- 📊 [Logging Configuration](docs/LOGGING.md) - Winston logging setup
+- �🔧 Installation, configuration, and troubleshooting
 - 💾 Database operations and examples
 - 🚀 Production deployment considerations
 
@@ -459,13 +685,21 @@ npm test  # (to be implemented)
 - [x] AutoMax car sales UI/UX design
 - [x] PostgreSQL with comprehensive migrations
 - [x] API endpoints for car management (ready for frontend)
+- [x] **Complete real-time chat system**
+- [x] **WebSocket integration for live messaging**
+- [x] **Personal ads system with full CRUD operations**
+- [x] **File attachments and image optimization**
+- [x] **Message reactions and typing indicators**
+- [x] **Full-text search across messages**
+- [x] **Chat analytics and conversation management**
+- [x] **Advanced chat features (templates, settings, reactions)**
 
 ### 🔄 In Progress:
 - [ ] Car inventory frontend implementation
 - [ ] Advanced search and filtering UI
-- [ ] Car inquiry and lead management system
-- [ ] Image upload and management
+- [ ] Image upload and management for personal ads
 - [ ] Vehicle comparison features
+- [ ] Personal ads frontend implementation
 
 ### 📋 Planned Features:
 - [ ] Complete Google OAuth implementation
@@ -475,14 +709,19 @@ npm test  # (to be implemented)
 - [ ] Advanced user roles and permissions
 - [ ] Comprehensive unit and integration tests
 - [ ] API documentation (Swagger/OpenAPI)
-- [ ] Logging system (Winston)
 - [ ] Performance monitoring and analytics
 - [ ] Mobile app API compatibility
-- [ ] Real-time notifications (WebSocket)
 - [ ] Vehicle history reports integration
 - [ ] Financing calculator tools
 - [ ] Dealer management system
 - [ ] Multi-language support
+- [ ] Push notifications for mobile apps
+- [ ] Advanced moderation tools for chat
+- [ ] Video calling integration
+- [ ] Voice messages in chat
+- [ ] Message encryption for privacy
+- [ ] Group conversations beyond buyer-seller
+- [ ] AI-powered chatbot assistance
 
 ### 🚀 Production Readiness:
 - [ ] Security audit and penetration testing
