@@ -1719,7 +1719,7 @@
         // Check user authentication and update navbar
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                const response = await fetch('/api/auth/check-session', {
+                const response = await fetch('/api/auth/session', {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
