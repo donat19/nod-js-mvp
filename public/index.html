@@ -347,66 +347,6 @@
             }
         }
     </script>
-                        
-                        // Create new user menu element
-                        const userMenuContainer = document.createElement('div');
-                        userMenuContainer.className = 'user-menu-container';
-                        userMenuContainer.style.cssText = 'position: relative;';
-                        
-                        userMenuContainer.innerHTML = `
-                            <button class="user-button" style="background: transparent; border: none; color: white; font-family: 'Poppins', sans-serif; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <img src="img/login.svg" alt="User" style="width: 20px; height: 20px;">
-                                <span>${userName}</span>
-                                <span style="font-size: 12px;">▼</span>
-                            </button>
-                            <div class="dropdown-menu" style="position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-width: 200px; z-index: 1000; display: none;">
-                                <a href="/my-ads" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">🚗 My Ads</a>
-                                <a href="/chats" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">💬 Chats</a>
-                                <a href="/dashboard" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">📊 Dashboard</a>
-                                <a href="/settings" style="display: block; padding: 12px 16px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0;">⚙️ Settings</a>
-                                <a href="#" onclick="logout()" style="display: block; padding: 12px 16px; text-decoration: none; color: #BD3432;">🚪 Logout</a>
-                            </div>
-                        `;
-                        
-                        // Replace the login button with the user menu
-                        loginButton.parentNode.replaceChild(userMenuContainer, loginButton);
-                        
-                        // Add dropdown functionality
-                        const userButton = userMenuContainer.querySelector('.user-button');
-                        const dropdownMenu = userMenuContainer.querySelector('.dropdown-menu');
-                        
-                        userButton.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-                        });
-                        
-                        // Close dropdown when clicking outside
-                        document.addEventListener('click', function() {
-                            dropdownMenu.style.display = 'none';
-                        });
-                    }
-                }
-            } catch (error) {
-                console.log('User not logged in or session check failed');
-            }
-        });
-
-        // Logout function
-        async function logout() {
-            try {
-                await fetch('/api/auth/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.reload();
-            } catch (error) {
-                console.error('Logout error:', error);
-                window.location.reload();
-            }
-        }
-    </script>
     
     <!-- Load advanced filter system -->
     <script src="js/advancedFilters.js"></script>
